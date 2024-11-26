@@ -1,26 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   clean.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/30 17:35:01 by mkling            #+#    #+#             */
-/*   Updated: 2024/11/26 16:45:09 by mkling           ###   ########.fr       */
+/*   Created: 2024/11/26 16:37:59 by mkling            #+#    #+#             */
+/*   Updated: 2024/11/26 16:42:59 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int argc, char **argv)
+void	destroy_forks(t_monitor *monitor)
 {
-	t_monitor	monitor;
+	int	i;
 
-	check_syntax(argc, argv);
-	init_monitor(argc, argv, &monitor);
-	create_philo(&monitor);
-	// TO DO...
-	wait_on_philo(&monitor);
-	clean_up(&monitor);
-	return (0);
+	i = 1;
+	while (i < monitor->philo_count)
+	{
+		pthread_mutex_destroy(&monitor->philo[i].fork);
+		printf("Destroyed fork %d\n", i);
+		i++;
+	}
+}
+
+void	clean_up(t_monitor *monitor)
+{
+	destroy_forks(monitor);
+	free(monitor->philo);
 }

@@ -6,13 +6,17 @@
 #    By: mkling <mkling@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/14 14:56:12 by mkling            #+#    #+#              #
-#    Updated: 2024/10/30 17:55:57 by mkling           ###   ########.fr        #
+#    Updated: 2024/11/26 16:45:51 by mkling           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		= philo
 
-SRCS		= main.c \
+MAIN		= main.c \
+
+FUNC		= syntax.c monitor.c wait.c actions.c clean.c
+
+SRCS		= $(FUNC) $(MAIN)
 
 OBJS		= %.c: %.o
 
@@ -30,7 +34,7 @@ $(NAME):	$(OBJS)
 			$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 debug:		$(OBJS)
-			$(CC) $(CFLAGS) -g -o $(NAME) $(SRCS)
+			$(CC) $(CFLAGS) -g3 -o $(NAME) $(SRCS)
 
 clean:
 			rm -rf $(OBJ_DIR)
