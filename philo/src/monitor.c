@@ -25,26 +25,27 @@ void	*routine(void *philo)
 	return (NULL);
 }
 
-void	create_philo(t_monitor *monitor)
+int	create_philo(t_monitor *monitor)
 {
 	int			i;
 
-	monitor->philo = malloc(sizeof(t_philo) * monitor->philo_count - 1);
+	monitor->philo_array = malloc(sizeof(t_philo) * monitor->philo_count - 1);
 	i = 0;
 	while (i < monitor->philo_count)
 	{
-		monitor->philo[i].id = i;
-		monitor->philo[i].last_meal = -1;
-		exit_if(pthread_create(&monitor->philo[i].thread, NULL, &routine,
-				(void *)(&monitor->philo[i])),
-			"Failed to create a thread", NULL);
+		monitor->philo_array[i]->id = i;
+		monitor->philo_array[i]->last_meal = -1;
+		monitor->philo_array[i]->retval = ft_calloc(sizeof(int), 1);
+		pthread_create(&monitor->philo_array[i]->thread, NULL, &routine, (void *)(&monitor->philo_array[i]));
+		// "Failed to thread", NULL);
 		printf("Created thread %d\n", i);
-		if (i > 0)
-		{
-			pthread_mutex_init(&monitor->philo[i].fork, NULL);
-			printf("Created fork %d\n", i);
-		}
 		i++;
+	}
+	i = 0;
+	while (i < monitor->philo_count - 1)
+	{
+		pthread_mutex_init(&monitor->philo_array[i]->fork, NULL);
+		printf("Created fork %d\n", i);
 	}
 }
 

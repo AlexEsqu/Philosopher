@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-void	exit_if(bool condition, char *message, t_monitor *monitor)
+void	error_if(bool condition, char *message, t_monitor *monitor)
 {
 	if (condition == false)
 		return ;
@@ -20,7 +20,6 @@ void	exit_if(bool condition, char *message, t_monitor *monitor)
 		free(monitor);
 	if (message != NULL)
 		printf("%s\n", message);
-	exit (1);
 }
 
 int	ft_atoi(const char *str)
@@ -69,25 +68,28 @@ int	str_is_digit(char *str)
 	return (1);
 }
 
-void	check_syntax(int argc, char **argv)
+int	check_syntax(int argc, char **argv)
 {
 	int	i;
 
-	exit_if(argc < 5, "Missing arguments", NULL);
-	exit_if(argc > 6, "Too many arguments", NULL);
+	if (argc < 5)
+		return (printf("Missing arguments"));
+	if (argc > 6)
+		return (printf("Too many arguments"));
 	i = 1;
 	while (i < argc)
 	{
-		exit_if(!str_is_digit(argv[i]),
-			"Inputs can only be digits", NULL);
-		exit_if(i == NUMBER_OF_PHILOSOPHER && ft_atoi(argv[i]) == 0,
-			"There must be at least one philosopher", NULL);
-		exit_if(i == TIME_TO_DIE && ft_atoi(argv[i]) == 0,
-			"Philosophers cannot die on the spot", NULL);
-		exit_if(i == TIME_TO_EAT && ft_atoi(argv[i]) == 0,
-			"Philosophers need some time to eat", NULL);
-		exit_if((i == TIME_TO_SLEEP && ft_atoi(argv[i]) == 0),
-			"Philosophers need some time to sleep", NULL);
+		if (!str_is_digit(argv[i]))
+			return (printf("Inputs can only be digits"));
+		if (i == NUMBER_OF_PHILOSOPHER && ft_atoi(argv[i]) <= 0)
+			return (printf("There must be at least one philosopher"));
+		if (i == TIME_TO_DIE && ft_atoi(argv[i]) <= 0)
+			return (printf("Philosophers cannot die on the spot"));
+		if (i == TIME_TO_EAT && ft_atoi(argv[i]) <= 0)
+			return (printf("Philosophers need some time to eat"));
+		if (i == TIME_TO_SLEEP && ft_atoi(argv[i]) <= 0)
+			return (printf("Philosophers need some time to sleep"));
 		i++;
 	}
+	return (0);
 }

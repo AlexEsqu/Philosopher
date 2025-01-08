@@ -12,13 +12,21 @@
 
 NAME		= philo
 
-MAIN		= main.c \
+MAIN		= main.c
 
 FUNC		= syntax.c monitor.c wait.c actions.c clean.c
 
-SRCS		= $(FUNC) $(MAIN)
+SRC_DIR		= src
 
-OBJS		= %.c: %.o
+SRCS		= $(addprefix $(SRC_DIR)/, $(FUNC)) $(addprefix $(SRC_DIR)/, $(MAIN))
+
+OBJ_DIR		= obj
+
+OBJS		= $(SRCS:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
+
+INC_DIR		= inc
+
+INC			= -I$(INC_DIR)
 
 CC			= cc
 
@@ -27,14 +35,17 @@ CFLAGS		= -Wall -Wextra -Werror
 
 all:		$(NAME)
 
-$(NAME):	$(OBJS)
-			$(CC) $(CFLAGS) -o $(NAME) $(SRCS)
+$(NAME):	$(OBJ_DIR) $(OBJS)
+			$(CC) $(CFLAGS) -o $(NAME) $(OBJS)
 
-%.o:		%.c
-			$(CC) $(CFLAGS) $(INC) -c $< -o $@
+$(OBJ_DIR)/%.o:		$(SRC_DIR)/%.c
+					$(CC) $(CFLAGS) $(INC) -c $< -o  $@
 
-debug:		$(OBJS)
-			$(CC) $(CFLAGS) -g3 -o $(NAME) $(SRCS)
+$(OBJ_DIR):
+			mkdir -p $@
+
+debug:
+			$(CC) $(CFLAGS) $(INC) -g3 -o $(NAME) $(SRCS)
 
 clean:
 			rm -rf $(OBJ_DIR)

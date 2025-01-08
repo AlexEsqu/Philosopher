@@ -16,7 +16,8 @@ int	main(int argc, char **argv)
 {
 	t_monitor	monitor;
 
-	check_syntax(argc, argv);
+	if (check_syntax(argc, argv) != 0)
+		return (1);
 	init_monitor(argc, argv, &monitor);
 	create_philo(&monitor);
 	// TO DO...

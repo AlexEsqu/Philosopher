@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:26 by mkling            #+#    #+#             */
-/*   Updated: 2024/10/30 17:37:23 by mkling           ###   ########.fr       */
+/*   Updated: 2024/11/26 16:40:39 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,45 @@
 # define PHILO_H
 
 # include <string.h>
-# include <time.h>
+# include <sys/time.h>
 # include <pthread.h>
 # include <stdio.h>
+# include <stdlib.h>
+# include <stdbool.h>
+# include <unistd.h>
 
+enum e_argv {
+	NUMBER_OF_PHILOSOPHER	= 1,
+	TIME_TO_DIE				= 2,
+	TIME_TO_EAT				= 3,
+	TIME_TO_SLEEP			= 4,
+	NUMBER_OF_MEALS			= 5
+};
 
+typedef struct s_philo {
+	int				id;
+	int				last_meal;
+	int				*retval;
+	pthread_mutex_t	fork;
+	pthread_t		thread;
+}	t_philo;
+
+typedef struct s_composium {
+	int			philo_count;
+	int			time_to_die;
+	int			time_to_eat;
+	int			time_to_sleep;
+	int			meal_count;
+	t_philo		**philo_array;
+}	t_monitor;
+
+int		ft_atoi(const char *str);
+int		check_syntax(int argc, char **argv);
+int		init_monitor(int argc, char **argv, t_monitor *monitor);
+int		create_philo(t_monitor *monitor);
+int		wait_on_philo(t_monitor *monitor);
+void	*routine(void *);
+size_t	get_miliseconds(t_monitor *monitor);
+void	clean_up(t_monitor *monitor);
 
 #endif

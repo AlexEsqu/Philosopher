@@ -16,8 +16,12 @@ size_t	get_miliseconds(t_monitor *monitor)
 {
 	struct timeval	time;
 
-	exit_if((gettimeofday(&time, NULL) == -1),
-		"Failed to get the time through gettimeofday", monitor);
+	if (gettimeofday(&time, NULL) == -1)
+	{
+		printf("Failed to get the time through gettimeofday");
+		free(monitor);
+		return (0);
+	}
 	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
 
@@ -29,12 +33,14 @@ void	ft_usleep()
 void	wait_on_philo(t_monitor *monitor)
 {
 	int	i;
+	int	retval;
 
 	i = 0;
 	while (i <= monitor->philo_count - 1)
 	{
-		exit_if(pthread_join(monitor->philo[i].thread, NULL),
-			"Failed to join thread", NULL);
+		pthread_join(monitor->philo_array[i]->thread, monitor->philo_array[i]->retval)
+		if (monitor->philo_array[i].retval != 0)
+			return (printf("Failed to join thread"));
 		i++;
 	}
 }
