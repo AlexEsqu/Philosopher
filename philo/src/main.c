@@ -14,11 +14,12 @@
 
 int	main(int argc, char **argv)
 {
-	t_monitor	monitor;
+	t_waiter	waiter;
 
-	if (check_syntax(argc, argv) != 0)
+	if (parse_for_waiter(argc, argv, &waiter) != 0)
 		return (1);
-	init_monitor(argc, argv, &monitor);
+	
+	init_waiter(argc, argv, &monitor);
 	create_philo(&monitor);
 	// TO DO...
 	wait_on_philo(&monitor);
