@@ -3,50 +3,57 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
+/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/26 14:20:53 by mkling            #+#    #+#             */
-/*   Updated: 2024/11/26 16:47:55 by mkling           ###   ########.fr       */
+/*   Created: 2025/01/08 23:16:48 by alex              #+#    #+#             */
+/*   Updated: 2025/01/08 23:57:07 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	*routine(void *philo)
+int	write_status_debug(int status, t_philo *philo, long elapsed)
 {
-	usleep(200);
-	pthread_mutex_lock(&((t_philo *)philo)->fork);
-	printf("I am philosopher %d\n", ((t_philo *)philo)->id);
-	printf("Philosopher %d started using fork\n", ((t_philo *)philo)->id);
-	usleep(100);
-	printf("Philosopher %d stopped using fork\n", ((t_philo *)philo)->id);
-	usleep(100);
-	pthread_mutex_unlock(&((t_philo *)philo)->fork);
-	return (NULL);
+	printf("%-6ld: %d ", elapsed, philo->id);
+	if (status == TAKE_FIRST_FORK && !dinner_has_ended(philo->waiter))
+		printf("has taken a fork\n");
+	if (status == TAKE_SECOND_FORK && !dinner_has_ended(philo->waiter))
+		printf("has taken the second fork\n");
+	else if (status == EATING && !dinner_has_ended(philo->waiter))
+		printf("is eating their %d th meal\n", philo->meal_count);
+	else if (status == SLEEPING && !dinner_has_ended(philo->waiter))
+		printf("is sleeping\n");
+	else if (status == THINKING && !dinner_has_ended(philo->waiter))
+		printf("is thinking\n");
+	else if (status == DIED)
+		printf("died\n");
+	return (0);
 }
 
-int	create_philo(t_waiter *waiter)
+int	write_status(int status, t_philo *philo, bool debug)
 {
-	int			i;
+	long	elapsed;
 
-	waiter->philo_array = malloc(sizeof(t_philo) * waiter->philo_count - 1);
-	i = 0;
-	while (i < waiter->philo_count)
+	elapsed = get_miliseconds();
+	if (mutex_do(LOCK, &philo->waiter->write_mutex) != 0)
+		return (1);
+	if (debug)
+		write_status_debug(status, philo, elapsed);
+	else if (!dinner_has_ended(philo->waiter))
 	{
-		waiter->philo_array[i]->id = i;
-		waiter->philo_array[i]->last_meal = -1;
-		waiter->philo_array[i]->retval = ft_calloc(sizeof(int), 1);
-		pthread_create(&waiter->philo_array[i]->thread, NULL, &routine, (void *)(&waiter->philo_array[i]));
-		// "Failed to thread", NULL);
-		printf("Created thread %d\n", i);
-		i++;
+		printf("%-6ld: %d ", elapsed, philo->id);
+		if (status == TAKE_FIRST_FORK || status == TAKE_SECOND_FORK)
+			printf("has taken a fork\n");
+		else if (status == EATING)
+			printf("is eating\n");
+		else if (status == SLEEPING)
+			printf("is sleeping\n");
+		else if (status == THINKING)
+			printf("is thinking\n");
+		else if (status == DIED)
+			printf("died\n");
 	}
-	i = 0;
-	while (i < waiter->philo_count - 1)
-	{
-		pthread_mutex_init(&waiter->philo_array[i]->fork, NULL);
-		printf("Created fork %d\n", i);
-	}
+	if (mutex_do(UNLOCK, &philo->waiter->write_mutex) != 0)
+		return (1);
+	return (0);
 }
-
-

@@ -5,38 +5,92 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/08 20:18:14 by alex              #+#    #+#             */
-/*   Updated: 2025/01/08 20:39:02 by alex             ###   ########.fr       */
+/*   Created: 2025/01/08 20:58:54 by alex              #+#    #+#             */
+/*   Updated: 2025/01/09 00:03:58 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int print_if_error(int action, int status)
+int	setter(t_mutex *mutex, int *destination, int value)
 {
-    if (status == 0)
-        return (0);
-    if (status == EINVAL && action != INIT)
-        printf("The value specified by mutex is invalid.");
-    else if (status == EINVAL && action == INIT)
-        printf("The value specified by attr is invalid.");
-    else if (status == EDEADLK)
-        printf("Deadlock would occur if the thread blocked waiting for mutex.");
-    else if (status == ENOMEM)
-        printf("The process cannot get enough memory to create another mutex.");
-    else if (status == EBUSY)
-        printf("Mutex is locked.");
-    return (1);
+	if (mutex_do(LOCK, mutex) != 0)
+		return (1);
+	*destination = value;
+	if (mutex_do(UNLOCK, mutex) != 0)
+		return (1);
+	return (0);
 }
 
-int    mutex_do(int action, t_mutex *mutex)
+int	getter(t_mutex *mutex, int *value)
 {
-    if (action == INIT)
-        return (print_if_error(action, pthread_mutex_init(mutex, NULL)));
-    else if (action == LOCK)
-        return (print_if_error(action, pthread_mutex_lock(mutex)));
-    else if (action == UNLOCK)
-        return (print_if_error(action, pthread_mutex_unlock(mutex)));
-    else if (action == DESTROY)
-        return (print_if_error(action, pthread_mutex_destroy(mutex)));
+	int	result;
+
+	if (mutex_do(LOCK, mutex) != 0)
+		return (-1);
+	result = *value;
+	if (mutex_do(UNLOCK, mutex) != 0)
+		return (-1);
+	return (result);
+}
+
+static void	assign_forks(t_philo *philo, t_fork **fork_array, int seat_number)
+{
+	int	philo_total;
+
+	philo_total = philo->waiter->philo_total;
+	philo->first_fork = fork_array[(seat_number + 1) % philo_total];
+	philo->second_fork = fork_array[seat_number];
+	if (philo->id % 2)
+	{
+		philo->first_fork = fork_array[seat_number];
+		philo->second_fork = fork_array[(seat_number + 1) % philo_total];
+	}
+}
+
+static int	invite_philosopher(t_waiter *waiter)
+{
+	int			seat;
+	t_philo		*philo;
+
+	seat = 0;
+	while (seat < waiter->philo_total)
+	{
+		philo = waiter->philo_array[seat];
+		philo->id = seat + 1;
+		philo->is_sated = false;
+		philo->meal_count = 0;
+		philo->waiter = waiter;
+		if (mutex_do(INIT, &philo->philo_mutex) != 0)
+			return (1);
+		assign_forks(philo, waiter->fork_array, seat);
+		seat++;
+	}
+	return (0);
+}
+
+int	set_table(t_waiter *waiter)
+{
+	int	i;
+
+	waiter->is_end = false;
+	waiter->is_end = false;
+	if (mutex_do(INIT, &waiter->table_mutex) != 0)
+		return (1);
+	waiter->philo_array = malloc(sizeof(t_philo) * waiter->philo_total);
+	if (!waiter->philo_array)
+		return (1);
+	waiter->fork_array = malloc(sizeof(t_fork) * waiter->philo_total);
+	if (waiter->fork_array)
+		return (1);
+	i = 0;
+	while (i < waiter->philo_total)
+	{
+		if (mutex_do(INIT, &waiter->fork_array[i]->fork) != 0)
+			return (1);
+		waiter->fork_array[i]->fork_id = i;
+		i++;
+	}
+	invite_philosopher(waiter);
+	return (0);
 }

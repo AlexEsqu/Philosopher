@@ -3,14 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
+/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:01 by mkling            #+#    #+#             */
-/*   Updated: 2024/11/26 16:45:09 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/09 00:09:36 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+bool dinner_has_ended(t_waiter *waiter)
+{
+	return (getter(&waiter->table_mutex, &waiter->is_end) == true);
+}
 
 int	main(int argc, char **argv)
 {
@@ -18,11 +23,7 @@ int	main(int argc, char **argv)
 
 	if (parse_for_waiter(argc, argv, &waiter) != 0)
 		return (1);
-	
-	init_waiter(argc, argv, &monitor);
-	create_philo(&monitor);
-	// TO DO...
-	wait_on_philo(&monitor);
-	clean_up(&monitor);
+	if (set_table(&waiter) != 0)
+		return (1);
 	return (0);
 }

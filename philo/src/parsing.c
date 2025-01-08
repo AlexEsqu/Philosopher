@@ -6,7 +6,7 @@
 /*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 13:35:00 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/08 20:35:04 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/09 00:22:16 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static bool	is_too_long_for_int(char *str)
 	return (digit_count > 10);
 }
 
-/* Ignores whitespace, accepts one sign, then converts characters into long */
+/* Ignores whitespace, accepts one sign, then converts characters into int */
 static int	ft_atoi(const char *str)
 {
 	int		minus;
@@ -75,47 +75,52 @@ static int	str_is_digit_sign_or_space(char *str)
 
 /* Return NULL if correct, otherwise the specified error message
 Checks input is between 5 and 6, only digits, and fits the */
-static char	*check_syntax(int argc, char **argv)
+static int check_syntax(int argc, char **argv)
 {
 	int	i;
 
 	if (argc < 5)
-		return ("Missing arguments");
+		return (printf("Missing arguments\n"));
 	if (argc > 6)
-		return ("Too many arguments");
-	i = 0;
+		return (printf("Too many arguments\n"));
+	i = 1;
 	while (i < argc)
 	{
 		if (!str_is_digit_sign_or_space(argv[i]))
-			return ("Input contains non digits");
+			return (printf("Input contains non digits\n"));
 		if (is_too_long_for_int(argv[i]))
-			return ("Input is too high! :leaf_emoji:");
+			return (printf("Input is too high! :leaf_emoji:\n"));
 		i++;
 	}
-	return (NULL);
+	return (0);
 }
 
 /*Check that input values are in the correct syntax & positive digits
 Convert them into integers and loads them into the waiter struct */
 int	parse_for_waiter(int argc, char **argv, t_waiter *waiter)
 {
-	int	input_is_invalid;
-
 	if (check_syntax(argc, argv) != 0)
 		return (1);
-	waiter->philo_count = ft_atoi(argv[NUMBER_OF_PHILOSOPHER]);
+	waiter->philo_total = ft_atoi(argv[NUMBER_OF_PHILOSOPHER]);
 	waiter->time_to_die = ft_atoi(argv[TIME_TO_DIE]);
 	waiter->time_to_eat = ft_atoi(argv[TIME_TO_EAT]);
 	waiter->time_to_sleep = ft_atoi(argv[TIME_TO_SLEEP]);
 	if (argc == 6)
-		waiter->meal_count = ft_atoi(argv[NUMBER_OF_MEALS]);
+		waiter->max_meals = ft_atoi(argv[NUMBER_OF_MEALS]);
 	else
-		waiter->meal_count = -1;
-	if (waiter->philo_count <= 0 || waiter->time_to_sleep <= 0
-		|| waiter->time_to_die <= 0 || waiter->time_to_eat <= 0
-		|| (argc == 6 && waiter->meal_count <= 0))
+		waiter->max_meals = -1;
+	if (waiter->philo_total <= 0)
 	{
-		printf("Inputs cannot be negative");
+		fprintf(stderr, "argv 1 = %s\n", argv[NUMBER_OF_PHILOSOPHER]);
+
+		fprintf(stderr, "number of philosopher = %d\n", waiter->philo_total);
+		printf("You didn't invite any philosopher to your symposium\n");
+		return (1);
+	}
+	if (waiter->time_to_sleep < 0 || waiter->time_to_die < 0
+		|| waiter->time_to_eat < 0 || (argc == 6 && waiter->max_meals < 0))
+	{
+		printf("Inputs cannot be negative\n");
 		return (1);
 	}
 	return (0);
