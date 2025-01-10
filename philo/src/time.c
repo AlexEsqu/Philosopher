@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   time.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 15:36:42 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/09 00:08:23 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/10 17:29:55 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,6 @@ void	micro_usleep(size_t wait_time, t_waiter *waiter)
 
 void	wait_on_philosophers(t_waiter *waiter)
 {
-	while (!getter(&waiter->table_mutex, &waiter->is_ready) == false)
+	while (getter(&waiter->table_mutex, &waiter->is_ready) != false)
 		;
 }

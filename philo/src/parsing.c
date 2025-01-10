@@ -77,7 +77,7 @@ static int	str_is_digit_sign_or_space(char *str)
 
 /* Return NULL if correct, otherwise the specified error message
 Checks input is between 5 and 6, only digits, and fits the */
-static int check_syntax(int argc, char **argv)
+static int	check_syntax(int argc, char **argv)
 {
 	int	i;
 

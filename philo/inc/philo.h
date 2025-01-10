@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:26 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/10 00:40:50 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/10 17:31:43 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,7 @@
 # include <unistd.h>
 # include <errno.h>
 
-# define t_mutex 	pthread_mutex_t
-
-typedef struct s_waiter t_waiter;
+typedef struct s_waiter	t_waiter;
 
 enum e_argv {
 	NUMBER_OF_PHILOSOPHER	= 1,
@@ -69,35 +67,35 @@ enum e_errors {
 };
 
 typedef struct s_fork {
-	int			fork_id;
-	t_mutex		fork;
+	int				fork_id;
+	pthread_mutex_t	fork;
 }	t_fork;
 
 typedef struct s_philo {
-	int			id;
-	int			is_sated;
-	int			meal_count;
-	int			last_meal_time;
-	t_fork		*first_fork;
-	t_fork		*second_fork;
-	t_mutex		philo_mutex;
-	pthread_t	thread;
-	t_waiter	*waiter;
+	int				id;
+	int				is_sated;
+	int				meal_count;
+	int				last_meal_time;
+	t_fork			*first_fork;
+	t_fork			*second_fork;
+	pthread_mutex_t	*philo_mutex;
+	pthread_t		thread;
+	t_waiter		*waiter;
 }	t_philo;
 
 typedef struct s_waiter {
-	int			is_end;
-	int			is_ready;
-	int			philo_total;
-	int			time_to_die;
-	int			time_to_eat;
-	int			time_to_sleep;
-	int			max_meals;
-	int			start_time;
-	t_philo		**philo_array;
-	t_fork		**fork_array;
-	t_mutex		table_mutex;
-	t_mutex		write_mutex;
+	int				is_end;
+	int				is_ready;
+	int				philo_total;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				max_meals;
+	int				start_time;
+	t_philo			**philo_array;
+	t_fork			**fork_array;
+	pthread_mutex_t	*table_mutex;
+	pthread_mutex_t	*write_mutex;
 }	t_waiter;
 
 /* PARSING */
@@ -115,18 +113,19 @@ int		write_status(int status, t_philo *philo, bool debug);
 
 /* UTILS */
 
-int		setter(t_mutex *mutex, int *destination, int value);
-int		getter(t_mutex *mutex, int *value);
+int		setter(pthread_mutex_t *mutex, int *destination, int value);
+int		getter(pthread_mutex_t *mutex, int *value);
 size_t	get_miliseconds(void);
 void	micro_usleep(size_t wait_time, t_waiter *waiter);
-bool 	dinner_has_ended(t_waiter *waiter);
+bool	dinner_has_ended(t_waiter *waiter);
 int		print_error(int error_code);
 
 
 /* ERROR HANDLING */
 
-int		thread_do(int action, pthread_t *thread, void *(*routine)(void *), void *data);
-int		mutex_do(int action, t_mutex *mutex);
+int		thread_do(int action, pthread_t *thread,
+		void *(*routine)(void *), void *data);
+int		mutex_do(int action, pthread_mutex_t *mutex);
 int		print_if_error(int action, int status);
 
 

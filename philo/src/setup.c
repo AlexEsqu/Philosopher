@@ -3,33 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   setup.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 20:58:54 by alex              #+#    #+#             */
-/*   Updated: 2025/01/10 01:05:13 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/10 17:31:51 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	setter(t_mutex *mutex, int *destination, int value)
+int	setter(pthread_mutex_t *mutex, int *destination, int value)
 {
-	if (mutex_do(LOCK, mutex) != 0)
+	if (pthread_mutex_lock(mutex) != 0)
 		return (1);
 	*destination = value;
-	if (mutex_do(UNLOCK, mutex) != 0)
+	if (pthread_mutex_unlock(mutex) != 0)
 		return (1);
 	return (0);
 }
 
-int	getter(t_mutex *mutex, int *value)
+int	getter(pthread_mutex_t *mutex, int *value)
 {
 	int	result;
 
-	if (mutex_do(LOCK, mutex) != 0)
+	if (pthread_mutex_lock(mutex) != 0)
 		return (-1);
 	result = *value;
-	if (mutex_do(UNLOCK, mutex) != 0)
+	if (pthread_mutex_unlock(mutex) != 0)
 		return (-1);
 	return (result);
 }
@@ -88,7 +88,8 @@ static int	init_philosophers(t_waiter *waiter)
 		philo->is_sated = false;
 		philo->meal_count = 0;
 		philo->waiter = waiter;
-		if (pthread_mutex_init(&philo->philo_mutex, 0) != 0)
+		philo->philo_mutex = malloc(sizeof(pthread_mutex_t));
+		if (pthread_mutex_init(philo->philo_mutex, 0) != 0)
 			return (print_error(ERR_MUTEX));
 		assign_forks(philo, waiter->fork_array, seat);
 		seat++;
@@ -101,7 +102,8 @@ int	set_table(t_waiter *waiter)
 	printf("Setting table\n");
 	waiter->is_end = false;
 	waiter->is_ready = false;
-	if (pthread_mutex_init(&waiter->table_mutex, 0) != 0)
+	waiter->table_mutex = malloc(sizeof(pthread_mutex_t));
+	if (pthread_mutex_init(waiter->table_mutex, 0) != 0)
 		return (print_error(ERR_MUTEX));
 	printf("Setting forks\n");
 	if (init_forks(waiter) != 0)

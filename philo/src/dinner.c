@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dinner.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 21:37:38 by alex              #+#    #+#             */
-/*   Updated: 2025/01/10 01:04:11 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/10 16:52:33 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,9 @@ static void think(t_philo *philo)
 	write_status(THINKING, philo, 1);
 }
 
-/* Locks first fork, report, locks second fork, report, set last meal time,
-report eating, sleep for eating time, set sated if max meal reached, unlocks forks */
+/* Locks first fork, report, locks second fork, report,
+set last meal time, report eating, sleep for eating time,
+set sated if max meal reached, unlocks forks */
 static void	eat(t_philo *philo)
 {
 	mutex_do(LOCK, &philo->first_fork->fork);
@@ -35,7 +36,8 @@ static void	eat(t_philo *philo)
 	philo->meal_count++;
 	write_status(EATING, philo, 1);
 	micro_usleep(philo->waiter->time_to_die, philo->waiter);
-	if (philo->waiter->max_meals > 0 && philo->meal_count == philo->waiter->max_meals)
+	if (philo->waiter->max_meals > 0
+		&& philo->meal_count == philo->waiter->max_meals)
 		setter(&philo->philo_mutex, &philo->is_sated, true);
 	mutex_do(UNLOCK, &philo->first_fork->fork);
 	mutex_do(UNLOCK, &philo->second_fork->fork);
@@ -74,9 +76,9 @@ int	start_dinner(t_waiter *waiter)
 	while (i < waiter->philo_total)
 	{
 		printf("Launching threads %d\n", i);
-		if (pthread_create(&waiter->philo_array[i]->thread,
-			NULL, dine, &waiter->philo_array[i]) != 0)
+		if (pthread_create(&waiter->philo_array[i]->thread, NULL, dine, &waiter->philo_array[i]) != 0)
 			return (print_error(ERR_THREAD));
+		printf("Thread %d launched\n", i);
 		i++;
 	}
 	printf("Getting time\n");
