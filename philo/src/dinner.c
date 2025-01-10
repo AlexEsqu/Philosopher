@@ -6,11 +6,17 @@
 /*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 21:37:38 by alex              #+#    #+#             */
-/*   Updated: 2025/01/08 23:55:56 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/10 01:04:11 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+// static void	lonely_dinner(t_philo *philo)
+// {
+// 	return ;
+// }
+
 
 static void think(t_philo *philo)
 {
@@ -55,28 +61,36 @@ void	*dine(void *data)
 	return (NULL);
 }
 
-int	dinner_start(t_waiter *waiter)
+int	start_dinner(t_waiter *waiter)
 {
 	int	i;
 
+	printf("Dinner starts\n");
 	if (waiter->max_meals == 0)
 		return (1);
 	if (waiter->philo_total == 1)
-		// TO DO
+		return (1); // TO DO
 	i = 0;
-	while (++i < waiter->philo_total)
+	while (i < waiter->philo_total)
 	{
-		thread_do(CREATE, &waiter->philo_array[i]->thread, dine, &waiter->philo_array[i]);
+		printf("Launching threads %d\n", i);
+		if (pthread_create(&waiter->philo_array[i]->thread,
+			NULL, dine, &waiter->philo_array[i]) != 0)
+			return (print_error(ERR_THREAD));
 		i++;
 	}
+	printf("Getting time\n");
 	waiter->start_time = get_miliseconds();
 	if (waiter->start_time == 0)
 		return (1);
 	setter(&waiter->table_mutex, &waiter->is_ready, true);
+	printf("Ready to start\n");
 	i = 0;
 	while (i < waiter->philo_total)
 	{
-		thread_do(JOIN, &waiter->philo_array[i]->thread, NULL, NULL);
+		printf("Joining philosopher %d\n", i);
+		if (pthread_join(waiter->philo_array[i]->thread, NULL) != 0)
+			return (print_error(ERR_THREAD));
 		i++;
 	}
 	return (0);

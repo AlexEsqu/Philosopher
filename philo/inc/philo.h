@@ -6,7 +6,7 @@
 /*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:26 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/09 00:08:27 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/10 00:40:50 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,14 @@ enum e_time {
 	MICROSECONDS,
 };
 
+enum e_errors {
+	SUCCESS,
+	ERR_GENERAL,
+	ERR_MALLOC,
+	ERR_MUTEX,
+	ERR_THREAD,
+};
+
 typedef struct s_fork {
 	int			fork_id;
 	t_mutex		fork;
@@ -100,7 +108,7 @@ int		parse_for_waiter(int argc, char **argv, t_waiter *waiter);
 
 int		set_table(t_waiter *waiter);
 void	wait_on_philosophers(t_waiter *waiter);
-
+int		start_dinner(t_waiter *waiter);
 
 int		write_status(int status, t_philo *philo, bool debug);
 
@@ -112,6 +120,7 @@ int		getter(t_mutex *mutex, int *value);
 size_t	get_miliseconds(void);
 void	micro_usleep(size_t wait_time, t_waiter *waiter);
 bool 	dinner_has_ended(t_waiter *waiter);
+int		print_error(int error_code);
 
 
 /* ERROR HANDLING */

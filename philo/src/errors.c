@@ -6,11 +6,14 @@
 /*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 20:18:14 by alex              #+#    #+#             */
-/*   Updated: 2025/01/08 23:56:55 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/10 00:30:02 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+
+
 
 int print_if_error(int action, int status)
 {

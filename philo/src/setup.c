@@ -6,7 +6,7 @@
 /*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 20:58:54 by alex              #+#    #+#             */
-/*   Updated: 2025/01/09 00:03:58 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/10 01:05:13 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,25 @@ int	getter(t_mutex *mutex, int *value)
 	return (result);
 }
 
+static int	init_forks(t_waiter *waiter)
+{
+	int	i;
+
+	waiter->fork_array = malloc(sizeof(t_fork) * waiter->philo_total);
+	if (!waiter->fork_array)
+		return (print_error(ERR_MALLOC));
+	i = 0;
+	while (i < waiter->philo_total)
+	{
+		waiter->fork_array[i] = malloc(sizeof(t_fork));
+		if (pthread_mutex_init(&waiter->fork_array[i]->fork, 0) != 0)
+			return (print_error(ERR_MUTEX));
+		waiter->fork_array[i]->fork_id = i;
+		i++;
+	}
+	return (SUCCESS);
+}
+
 static void	assign_forks(t_philo *philo, t_fork **fork_array, int seat_number)
 {
 	int	philo_total;
@@ -48,21 +67,29 @@ static void	assign_forks(t_philo *philo, t_fork **fork_array, int seat_number)
 	}
 }
 
-static int	invite_philosopher(t_waiter *waiter)
+static int	init_philosophers(t_waiter *waiter)
 {
 	int			seat;
 	t_philo		*philo;
 
+	printf("- inviting philosophers\n");
+	waiter->philo_array = malloc(sizeof(t_philo) * waiter->philo_total);
+	if (!waiter->philo_array)
+		return (1);
 	seat = 0;
+	printf("- seating philosophers\n");
 	while (seat < waiter->philo_total)
 	{
+		waiter->philo_array[seat] = malloc(sizeof(t_philo));
 		philo = waiter->philo_array[seat];
+		if (!philo)
+			return (print_error(ERR_MALLOC));
 		philo->id = seat + 1;
 		philo->is_sated = false;
 		philo->meal_count = 0;
 		philo->waiter = waiter;
-		if (mutex_do(INIT, &philo->philo_mutex) != 0)
-			return (1);
+		if (pthread_mutex_init(&philo->philo_mutex, 0) != 0)
+			return (print_error(ERR_MUTEX));
 		assign_forks(philo, waiter->fork_array, seat);
 		seat++;
 	}
@@ -71,26 +98,16 @@ static int	invite_philosopher(t_waiter *waiter)
 
 int	set_table(t_waiter *waiter)
 {
-	int	i;
-
+	printf("Setting table\n");
 	waiter->is_end = false;
-	waiter->is_end = false;
-	if (mutex_do(INIT, &waiter->table_mutex) != 0)
+	waiter->is_ready = false;
+	if (pthread_mutex_init(&waiter->table_mutex, 0) != 0)
+		return (print_error(ERR_MUTEX));
+	printf("Setting forks\n");
+	if (init_forks(waiter) != 0)
 		return (1);
-	waiter->philo_array = malloc(sizeof(t_philo) * waiter->philo_total);
-	if (!waiter->philo_array)
+	printf("Seating philosophers\n");
+	if (init_philosophers(waiter) != 0)
 		return (1);
-	waiter->fork_array = malloc(sizeof(t_fork) * waiter->philo_total);
-	if (waiter->fork_array)
-		return (1);
-	i = 0;
-	while (i < waiter->philo_total)
-	{
-		if (mutex_do(INIT, &waiter->fork_array[i]->fork) != 0)
-			return (1);
-		waiter->fork_array[i]->fork_id = i;
-		i++;
-	}
-	invite_philosopher(waiter);
 	return (0);
 }

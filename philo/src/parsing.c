@@ -6,7 +6,7 @@
 /*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 13:35:00 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/09 00:22:16 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/10 00:01:45 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,23 +37,25 @@ static bool	is_too_long_for_int(char *str)
 /* Ignores whitespace, accepts one sign, then converts characters into int */
 static int	ft_atoi(const char *str)
 {
-	int		minus;
-	long	number;
+	int	i;
+	int	minus;
+	int	number;
 
+	i = 0;
 	minus = -1;
 	number = 0;
-	while ((*str >= '0' && *str <= '9') || *str == ' ')
-		str++;
-	if (*str == '+' || *str == '-')
+	while ((str[i] >= 9 && str[i] <= 13) || str[i] == ' ')
+		i++;
+	if (str[i] == '+' || str[i] == '-')
 	{
-		if (*str == '-')
+		if (str[i] == '-')
 			minus = minus * (-1);
-		str++;
+		i++;
 	}
-	while (*str >= '0' && *str <= '9')
+	while (str[i] >= '0' && str[i] <= '9')
 	{
-		number = number * 10 - (*str - '0');
-		str++;
+		number = number * 10 - (str[i] - '0');
+		i++;
 	}
 	return (number * minus);
 }
@@ -109,18 +111,11 @@ int	parse_for_waiter(int argc, char **argv, t_waiter *waiter)
 		waiter->max_meals = ft_atoi(argv[NUMBER_OF_MEALS]);
 	else
 		waiter->max_meals = -1;
-	if (waiter->philo_total <= 0)
+	if (waiter->philo_total <= 0 || waiter->time_to_sleep <= 0
+		|| waiter->time_to_die <= 0 || waiter->time_to_eat <= 0
+		|| (argc == 6 && waiter->max_meals <= 0))
 	{
-		fprintf(stderr, "argv 1 = %s\n", argv[NUMBER_OF_PHILOSOPHER]);
-
-		fprintf(stderr, "number of philosopher = %d\n", waiter->philo_total);
-		printf("You didn't invite any philosopher to your symposium\n");
-		return (1);
-	}
-	if (waiter->time_to_sleep < 0 || waiter->time_to_die < 0
-		|| waiter->time_to_eat < 0 || (argc == 6 && waiter->max_meals < 0))
-	{
-		printf("Inputs cannot be negative\n");
+		printf("Inputs cannot be null or negative\n");
 		return (1);
 	}
 	return (0);
