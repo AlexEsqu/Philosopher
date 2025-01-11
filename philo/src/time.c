@@ -6,14 +6,14 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 15:36:42 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/10 17:29:55 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/11 18:55:55 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 /* Returns number of miliseconds since 1st january 1970, or 0 if fails */
-size_t	get_miliseconds(void)
+static size_t	get_miliseconds(void)
 {
 	struct timeval	time;
 
@@ -23,6 +23,15 @@ size_t	get_miliseconds(void)
 		return (0);
 	}
 	return (time.tv_sec * 1000 + time.tv_usec / 1000);
+}
+
+size_t	get_actual_time(void)
+{
+	static int	start_time;
+
+	if (start_time == 0)
+		start_time = get_miliseconds();
+	return (get_miliseconds() - start_time);
 }
 
 void	micro_usleep(size_t wait_time, t_waiter *waiter)
@@ -50,6 +59,6 @@ void	micro_usleep(size_t wait_time, t_waiter *waiter)
 
 void	wait_on_philosophers(t_waiter *waiter)
 {
-	while (getter(&waiter->table_mutex, &waiter->is_ready) != false)
+	while (getter(&waiter->table_mutex, &waiter->is_ready) == false)
 		;
 }

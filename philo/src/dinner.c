@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 21:37:38 by alex              #+#    #+#             */
-/*   Updated: 2025/01/10 16:52:33 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/11 18:58:32 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 // }
 
 
-static void think(t_philo *philo)
+static void	think(t_philo *philo)
 {
 	write_status(THINKING, philo, 1);
 }
@@ -28,9 +28,9 @@ set last meal time, report eating, sleep for eating time,
 set sated if max meal reached, unlocks forks */
 static void	eat(t_philo *philo)
 {
-	mutex_do(LOCK, &philo->first_fork->fork);
+	pthread_mutex_lock(philo->first_fork->fork);
 	write_status(TAKE_FIRST_FORK, philo, 1);
-	mutex_do(LOCK, &philo->second_fork->fork);
+	pthread_mutex_lock(philo->second_fork->fork);
 	write_status(TAKE_SECOND_FORK, philo, 1);
 	setter(&philo->philo_mutex, &philo->last_meal_time, get_miliseconds());
 	philo->meal_count++;
@@ -39,8 +39,8 @@ static void	eat(t_philo *philo)
 	if (philo->waiter->max_meals > 0
 		&& philo->meal_count == philo->waiter->max_meals)
 		setter(&philo->philo_mutex, &philo->is_sated, true);
-	mutex_do(UNLOCK, &philo->first_fork->fork);
-	mutex_do(UNLOCK, &philo->second_fork->fork);
+	pthread_mutex_unlock(&philo->first_fork->fork);
+	pthread_mutex_unlock(&philo->second_fork->fork);
 }
 
 /* Once all philosopher are seated, */
@@ -52,7 +52,6 @@ void	*dine(void *data)
 	wait_on_philosophers(philo->waiter);
 	while (!dinner_has_ended(philo->waiter))
 	{
-		// check if full
 		if (philo->is_sated == true)
 			break ;
 		eat(philo);
@@ -67,7 +66,7 @@ int	start_dinner(t_waiter *waiter)
 {
 	int	i;
 
-	printf("Dinner starts\n");
+	printf("Dinner about to start\n");
 	if (waiter->max_meals == 0)
 		return (1);
 	if (waiter->philo_total == 1)
@@ -75,8 +74,7 @@ int	start_dinner(t_waiter *waiter)
 	i = 0;
 	while (i < waiter->philo_total)
 	{
-		printf("Launching threads %d\n", i);
-		if (pthread_create(&waiter->philo_array[i]->thread, NULL, dine, &waiter->philo_array[i]) != 0)
+		if (pthread_create(&waiter->philo_array[i]->thread, NULL, dine, waiter->philo_array[i]) != 0)
 			return (print_error(ERR_THREAD));
 		printf("Thread %d launched\n", i);
 		i++;
@@ -85,6 +83,7 @@ int	start_dinner(t_waiter *waiter)
 	waiter->start_time = get_miliseconds();
 	if (waiter->start_time == 0)
 		return (1);
+	printf("Dinner Start = %d\n", waiter->start_time);
 	setter(&waiter->table_mutex, &waiter->is_ready, true);
 	printf("Ready to start\n");
 	i = 0;
@@ -93,6 +92,7 @@ int	start_dinner(t_waiter *waiter)
 		printf("Joining philosopher %d\n", i);
 		if (pthread_join(waiter->philo_array[i]->thread, NULL) != 0)
 			return (print_error(ERR_THREAD));
+		printf("Philosopher %d joined\n", i);
 		i++;
 	}
 	return (0);

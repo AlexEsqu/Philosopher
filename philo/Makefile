@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: alex <alex@student.42.fr>                  +#+  +:+       +#+         #
+#    By: mkling <mkling@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/14 14:56:12 by mkling            #+#    #+#              #
-#    Updated: 2025/01/08 23:56:23 by alex             ###   ########.fr        #
+#    Updated: 2025/01/11 18:51:05 by mkling           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME		= philo
 
 MAIN		= main.c
 
-FUNC		= dinner.c errors.c monitor.c parsing.c setup.c time.c
+FUNC		= dinner.c error.c monitor.c parsing.c setup.c time.c
 
 SRC_DIR		= src
 
@@ -30,7 +30,9 @@ INC			= -I$(INC_DIR)
 
 CC			= cc
 
-CFLAGS		= -Wall -Wextra -Werror
+CFLAGS		= -Wall -Wextra -Werror -g
+
+THREADFLAG	= -fsanitize=thread -g3
 
 
 all:		$(NAME)
@@ -54,5 +56,8 @@ fclean:		clean
 			rm -rf $(NAME)
 
 re:			fclean all
+
+valgrind:
+			valgrind --tool=helgrind ./philo
 
 .PHONY:		all clean fclean re debug

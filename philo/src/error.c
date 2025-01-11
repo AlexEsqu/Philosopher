@@ -6,57 +6,64 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 15:15:01 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/10 17:25:35 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/11 18:50:48 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+void	ft_putstr_fd(char *s, int fd)
+{
+	int	i;
+
+	i = 0;
+	if (s == NULL)
+		return ;
+	while (s[i])
+	{
+		write(fd, &s[i], 1);
+		i++;
+	}
+}
+
 int	print_if_error(int action, int status)
 {
 	if (status == 0)
 		return (0);
-	if (action == MALLOC)
-		printf("Failed to allocate memory.");
 	if (status == EINVAL && action != INIT && action != CREATE)
-		printf("The value specified by mutex is invalid.");
+		ft_putstr_fd("The value specified by mutex is invalid.", 2);
 	else if (status == EINVAL && (action == INIT || action == CREATE))
-		printf("The value specified by attr is invalid.");
+		ft_putstr_fd("The value specified by attr is invalid.", 2);
 	else if (status == EDEADLK)
-		printf("Deadlock detected.");
+		ft_putstr_fd("Deadlock detected.", 2);
 	else if (status == ENOMEM)
-		printf("No memory to create another mutex.");
+		ft_putstr_fd("No memory to create another mutex.", 2);
 	else if (status == EBUSY)
-		printf("Mutex is locked.");
+		ft_putstr_fd("Mutex is locked.", 2);
 	else if (status == ESRCH)
-		printf("No corresponding thread found.");
+		ft_putstr_fd("No corresponding thread found.", 2);
 	else if (status == EPERM)
-		printf("Permission denied.");
+		ft_putstr_fd("Permission denied.", 2);
 	else if (status == EAGAIN)
-		printf("No ressource to create another thread.");
+		ft_putstr_fd("No ressource to create another thread.", 2);
 	return (status);
 }
 
-int	mutex_do(int action, pthread_mutex_t *mutex)
+int	print_error(int error_code)
 {
-	if (action == INIT)
-		return (print_if_error(action, pthread_mutex_init(mutex, NULL)));
-	else if (action == LOCK)
-		return (print_if_error(action, pthread_mutex_lock(mutex)));
-	else if (action == UNLOCK)
-		return (print_if_error(action, pthread_mutex_unlock(mutex)));
-	else if (action == DESTROY)
-		return (print_if_error(action, pthread_mutex_destroy(mutex)));
-	return (1);
+	if (error_code == ERR_MALLOC)
+		ft_putstr_fd("Failed to allocate memory.", 2);
+	if (error_code == ERR_MUTEX)
+		ft_putstr_fd("Mutex failed\n", 2);
+	if (error_code == ERR_THREAD)
+		ft_putstr_fd("Thread failed\n", 2);
+	else
+		ft_putstr_fd("Error", 2);
+	return (error_code);
 }
 
-int	thread_do(int action, pthread_t *thread, void *(*routine)(void *), void *data)
+void	clean_up(t_waiter *waiter)
 {
-	if (action == CREATE)
-		return (print_if_error(action, pthread_create(thread, NULL, routine, data)));
-	else if (action == JOIN)
-		return (print_if_error(action, pthread_join(*thread, NULL)));
-	else if (action == DETACH)
-		return (print_if_error(action, pthread_detach(*thread)));
-	return (1);
+	pthread_mutex_destroy(&waiter->table_mutex);
+	pthread_mutex_destroy(&waiter->write_mutex);
 }

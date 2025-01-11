@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:26 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/10 17:31:43 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/11 18:59:22 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,6 @@ enum e_philo_states {
 	DIED,
 };
 
-enum e_mtx_thd_actions {
-	INIT,
-	LOCK,
-	UNLOCK,
-	DESTROY,
-	CREATE,
-	JOIN,
-	DETACH,
-	MALLOC,
-};
-
 enum e_time {
 	SECONDS,
 	MILLISECONDS,
@@ -66,19 +55,14 @@ enum e_errors {
 	ERR_THREAD,
 };
 
-typedef struct s_fork {
-	int				fork_id;
-	pthread_mutex_t	fork;
-}	t_fork;
-
 typedef struct s_philo {
 	int				id;
 	int				is_sated;
 	int				meal_count;
 	int				last_meal_time;
-	t_fork			*first_fork;
-	t_fork			*second_fork;
-	pthread_mutex_t	*philo_mutex;
+	pthread_mutex_t	left_fork;
+	pthread_mutex_t	*right_fork;
+	pthread_mutex_t	philo_mutex;
 	pthread_t		thread;
 	t_waiter		*waiter;
 }	t_philo;
@@ -92,10 +76,9 @@ typedef struct s_waiter {
 	int				time_to_sleep;
 	int				max_meals;
 	int				start_time;
-	t_philo			**philo_array;
-	t_fork			**fork_array;
-	pthread_mutex_t	*table_mutex;
-	pthread_mutex_t	*write_mutex;
+	t_philo			philo_array[201];
+	pthread_mutex_t	table_mutex;
+	pthread_mutex_t	write_mutex;
 }	t_waiter;
 
 /* PARSING */
@@ -105,29 +88,31 @@ int		parse_for_waiter(int argc, char **argv, t_waiter *waiter);
 /* INITIALIZATION */
 
 int		set_table(t_waiter *waiter);
-void	wait_on_philosophers(t_waiter *waiter);
+void	wait_until_philo_are_seated(t_waiter *waiter);
 int		start_dinner(t_waiter *waiter);
 
+/* MONITORING */
 int		write_status(int status, t_philo *philo, bool debug);
-
+size_t	get_actual_time(void);
+void	micro_usleep(size_t wait_time, t_waiter *waiter);
+bool	dinner_has_ended(t_waiter *waiter);
 
 /* UTILS */
 
 int		setter(pthread_mutex_t *mutex, int *destination, int value);
 int		getter(pthread_mutex_t *mutex, int *value);
-size_t	get_miliseconds(void);
-void	micro_usleep(size_t wait_time, t_waiter *waiter);
-bool	dinner_has_ended(t_waiter *waiter);
-int		print_error(int error_code);
-
 
 /* ERROR HANDLING */
 
 int		thread_do(int action, pthread_t *thread,
-		void *(*routine)(void *), void *data);
+			void *(*routine)(void *), void *data);
 int		mutex_do(int action, pthread_mutex_t *mutex);
 int		print_if_error(int action, int status);
+int		print_error(int error_code);
 
+/* CLEAN UP */
+
+void	clean_up(t_waiter *waiter);
 
 
 // int		create_philo(t_waiter *monitor);
