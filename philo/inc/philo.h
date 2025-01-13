@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:26 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/13 11:18:54 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/13 13:38:02 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ typedef struct s_philo {
 }	t_philo;
 
 typedef struct s_waiter {
-	int				is_end;
+	int				is_dinner_ongoing;
 	int				is_ready;
 	int				philo_total;
 	int				time_to_die;
@@ -77,7 +77,7 @@ typedef struct s_waiter {
 	int				max_meals;
 	int				start_time;
 	t_philo			philo_array[201];
-	pthread_mutex_t	table_mutex;
+	pthread_mutex_t	waiter_mutex;
 	pthread_mutex_t	write_mutex;
 }	t_waiter;
 

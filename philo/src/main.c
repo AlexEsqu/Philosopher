@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:01 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/11 18:50:43 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/13 13:41:08 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 bool	dinner_has_ended(t_waiter *waiter)
 {
-	return (getter(&waiter->table_mutex, &waiter->is_end) == true);
+	return (getter(&waiter->waiter_mutex, &waiter->is_dinner_ongoing) == true);
 }
 
 int	main(int argc, char **argv)

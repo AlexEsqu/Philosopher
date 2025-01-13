@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 23:16:48 by alex              #+#    #+#             */
-/*   Updated: 2025/01/13 11:19:32 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/13 13:38:26 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int	starvation(t_waiter *waiter)
 		while (!dinner_has_ended(waiter) && i < waiter->philo_total)
 		{
 			if (is_starving(&waiter->philo_array[i]))
-				setter(&waiter->table_mutex, &waiter->is_end, true);
+				setter(&waiter->waiter_mutex, &waiter->is_dinner_ongoing, true);
 		}
 		micro_usleep(10, waiter);
 	}

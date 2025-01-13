@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 20:58:54 by alex              #+#    #+#             */
-/*   Updated: 2025/01/13 11:21:53 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/13 19:31:08 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,14 @@
 
 int	setter(pthread_mutex_t *mutex, int *destination, int value)
 {
+	printf("SETTER: lock mutex %p\n", mutex);
 	if (pthread_mutex_lock(mutex) != 0)
 		return (1);
+	printf("Destination is %d, value is %d\n", *destination, value);
 	*destination = value;
 	if (pthread_mutex_unlock(mutex) != 0)
 		return (1);
+	printf("SETTER: unlock mutex %p\n", mutex);
 	return (0);
 }
 
@@ -26,6 +29,7 @@ int	getter(pthread_mutex_t *mutex, int *value)
 {
 	int	result;
 
+	printf("GETTER: lock mutex %p\n", mutex);
 	if (!mutex || !value)
 		return (print_error(ERR_MUTEX));
 	if (pthread_mutex_lock(mutex) != 0)
@@ -33,6 +37,7 @@ int	getter(pthread_mutex_t *mutex, int *value)
 	result = *value;
 	if (pthread_mutex_unlock(mutex) != 0)
 		return (print_error(ERR_MUTEX));
+	printf("GETTER: unlock mutex %p\n", mutex);
 	return (result);
 }
 
@@ -68,9 +73,9 @@ static int	seat_philosophers(t_waiter *waiter)
 
 int	set_table(t_waiter *waiter)
 {
-	waiter->is_end = false;
+	waiter->is_dinner_ongoing = false;
 	waiter->is_ready = false;
-	if (pthread_mutex_init(&waiter->table_mutex, NULL) != 0)
+	if (pthread_mutex_init(&waiter->waiter_mutex, NULL) != 0)
 		return (print_error(ERR_MUTEX));
 	if (pthread_mutex_init(&waiter->write_mutex, NULL) != 0)
 		return (print_error(ERR_MUTEX));

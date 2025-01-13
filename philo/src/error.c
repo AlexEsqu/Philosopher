@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 15:15:01 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/13 11:18:44 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/13 13:38:26 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,6 @@ int	print_error(int error_code)
 
 void	clean_up(t_waiter *waiter)
 {
-	pthread_mutex_destroy(&waiter->table_mutex);
+	pthread_mutex_destroy(&waiter->waiter_mutex);
 	pthread_mutex_destroy(&waiter->write_mutex);
 }

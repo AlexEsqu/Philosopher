@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 15:36:42 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/13 11:17:58 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/13 19:35:51 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,9 @@ size_t	get_miliseconds(void)
 
 size_t	get_actual_time(void)
 {
-	static int	start_time;
+	static size_t	start_time;
 
+	printf("time is %zu\n", start_time);
 	if (start_time == 0)
 		start_time = get_miliseconds();
 	return (get_miliseconds() - start_time);
@@ -59,6 +60,6 @@ void	micro_usleep(size_t wait_time, t_waiter *waiter)
 
 void	wait_until_philo_are_seated(t_waiter *waiter)
 {
-	while (getter(&waiter->table_mutex, &waiter->is_ready) == false)
-		;
+	while (getter(&waiter->waiter_mutex, &waiter->is_dinner_ongoing) == false)
+		micro_usleep(10, waiter);
 }

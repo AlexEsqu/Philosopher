@@ -6,7 +6,7 @@
 #    By: mkling <mkling@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/14 14:56:12 by mkling            #+#    #+#              #
-#    Updated: 2025/01/11 18:51:05 by mkling           ###   ########.fr        #
+#    Updated: 2025/01/13 11:50:30 by mkling           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,7 @@ $(OBJ_DIR):
 			mkdir -p $@
 
 debug:
-			$(CC) $(CFLAGS) $(INC) -g3 -o $(NAME) $(SRCS)
+			$(CC) $(CFLAGS) $(INC) -g3 -fsanitize=thread -o $(NAME) $(SRCS)
 
 clean:
 			rm -rf $(OBJ_DIR)
