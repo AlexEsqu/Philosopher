@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   dinner.c                                           :+:      :+:    :+:   */
+/*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
+/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 21:37:38 by alex              #+#    #+#             */
-/*   Updated: 2025/01/13 19:36:42 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/14 00:22:16 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,17 @@ static int	lonely_dinner(t_philo *philo)
 	write_status(TAKE_FIRST_FORK, philo, 1);
 	micro_usleep(philo->waiter->time_to_die, philo->waiter);
 	write_status(DIED, philo, 1);
+	pthread_mutex_unlock(&philo->left_fork);
 	return (0);
 }
-
 
 static void	think(t_philo *philo)
 {
 	write_status(THINKING, philo, 1);
 }
 
-/* Locks first fork, report, locks second fork, report,
-set last meal time, report eating, sleep for eating time,
-set sated if max meal reached, unlocks forks */
+/* Locks first fork, report, locks second fork, report, set last meal time,
+report eating, sleep for eating time, set sated if max meal reached, unlocks forks */
 static void	eat(t_philo *philo,
 	pthread_mutex_t *first_fork, pthread_mutex_t *second_fork)
 {
@@ -55,9 +54,10 @@ void	*dine(void *data)
 
 	philo = (t_philo *)data;
 	wait_until_philo_are_seated(philo->waiter);
+	printf("Dinner has started\n");
 	while (!dinner_has_ended(philo->waiter))
 	{
-		if (philo->is_sated == true)
+		if (philo->is_sated)
 			break ;
 		if (philo->id % 2)
 			eat(philo, &philo->left_fork, philo->right_fork);
@@ -77,25 +77,25 @@ int	start_dinner(t_waiter *waiter)
 	if (waiter->max_meals == 0)
 		return (1);
 	if (waiter->philo_total == 1)
-		return (lonely_dinner(&waiter->philo_array[0]));
+		return (lonely_dinner(waiter->philo_array[0]));
 	i = 0;
 	while (i < waiter->philo_total)
 	{
-		if (pthread_create(&waiter->philo_array[i].thread,
-				NULL, dine, &waiter->philo_array[i]) != 0)
+		if (pthread_create(&waiter->philo_array[i]->thread,
+				NULL, dine, waiter->philo_array[i]) != 0)
 			return (print_error(ERR_THREAD));
-		printf("Thread %d launched\n", i);
 		i++;
 	}
-	waiter->start_time = get_actual_time();
-	printf("Start time is %d\n", waiter->start_time);
-	setter(&waiter->waiter_mutex, &waiter->is_dinner_ongoing, true);
+	waiter->start_time = get_miliseconds();
+	if (waiter->start_time == 0)
+		return (1);
+	setter(&waiter->waiter_mutex, &waiter->is_ready, true);
+	printf("Ready to start\n");
 	i = 0;
 	while (i < waiter->philo_total)
 	{
-		if (pthread_join(waiter->philo_array[i].thread, NULL) != 0)
+		if (pthread_join(waiter->philo_array[i]->thread, NULL) != 0)
 			return (print_error(ERR_THREAD));
-		printf("Philosopher %d joined\n", i);
 		i++;
 	}
 	return (0);

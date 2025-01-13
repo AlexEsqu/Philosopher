@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
+/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:26 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/13 13:38:02 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/14 00:16:20 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@
 
 typedef struct s_waiter	t_waiter;
 
-enum e_argv {
+enum e_argv
+{
 	NUMBER_OF_PHILOSOPHER	= 1,
 	TIME_TO_DIE				= 2,
 	TIME_TO_EAT				= 3,
@@ -32,7 +33,8 @@ enum e_argv {
 	NUMBER_OF_MEALS			= 5
 };
 
-enum e_philo_states {
+enum e_philo_states
+{
 	EATING,
 	SLEEPING,
 	THINKING,
@@ -41,13 +43,15 @@ enum e_philo_states {
 	DIED,
 };
 
-enum e_time {
+enum e_time
+{
 	SECONDS,
 	MILLISECONDS,
 	MICROSECONDS,
 };
 
-enum e_errors {
+enum e_errors
+{
 	SUCCESS,
 	ERR_GENERAL,
 	ERR_MALLOC,
@@ -55,7 +59,8 @@ enum e_errors {
 	ERR_THREAD,
 };
 
-typedef struct s_philo {
+typedef struct s_philo
+{
 	int				id;
 	int				is_sated;
 	int				meal_count;
@@ -67,7 +72,8 @@ typedef struct s_philo {
 	t_waiter		*waiter;
 }	t_philo;
 
-typedef struct s_waiter {
+typedef struct s_waiter
+{
 	int				is_dinner_ongoing;
 	int				is_ready;
 	int				philo_total;
@@ -76,7 +82,7 @@ typedef struct s_waiter {
 	int				time_to_sleep;
 	int				max_meals;
 	int				start_time;
-	t_philo			philo_array[201];
+	t_philo			**philo_array;
 	pthread_mutex_t	waiter_mutex;
 	pthread_mutex_t	write_mutex;
 }	t_waiter;
@@ -111,12 +117,5 @@ int		print_error(int error_code);
 /* CLEAN UP */
 
 void	clean_up(t_waiter *waiter);
-
-
-// int		create_philo(t_waiter *monitor);
-// int		wait_on_philo(t_waiter *monitor);
-// void	*routine(void *);
-// size_t	get_miliseconds(t_waiter *monitor);
-// void	clean_up(t_waiter *monitor);
 
 #endif

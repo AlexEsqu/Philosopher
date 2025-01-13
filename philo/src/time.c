@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   time.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
+/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 15:36:42 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/13 19:35:51 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/14 00:22:37 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,6 @@ void	micro_usleep(size_t wait_time, t_waiter *waiter)
 
 void	wait_until_philo_are_seated(t_waiter *waiter)
 {
-	while (getter(&waiter->waiter_mutex, &waiter->is_dinner_ongoing) == false)
+	while (getter(&waiter->waiter_mutex, &waiter->is_ready) == false)
 		micro_usleep(10, waiter);
 }

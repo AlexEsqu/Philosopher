@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mkling <mkling@student.42.fr>              +#+  +:+       +#+         #
+#    By: alex <alex@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/14 14:56:12 by mkling            #+#    #+#              #
-#    Updated: 2025/01/13 11:50:30 by mkling           ###   ########.fr        #
+#    Updated: 2025/01/14 00:03:06 by alex             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME		= philo
 
 MAIN		= main.c
 
-FUNC		= dinner.c error.c monitor.c parsing.c setup.c time.c
+FUNC		= routine.c error.c monitor.c parsing.c setup.c time.c
 
 SRC_DIR		= src
 
