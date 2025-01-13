@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:26 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/11 18:59:22 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/13 11:18:54 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,10 @@ void	wait_until_philo_are_seated(t_waiter *waiter);
 int		start_dinner(t_waiter *waiter);
 
 /* MONITORING */
+
 int		write_status(int status, t_philo *philo, bool debug);
 size_t	get_actual_time(void);
+size_t	get_miliseconds(void);
 void	micro_usleep(size_t wait_time, t_waiter *waiter);
 bool	dinner_has_ended(t_waiter *waiter);
 
@@ -104,10 +106,6 @@ int		getter(pthread_mutex_t *mutex, int *value);
 
 /* ERROR HANDLING */
 
-int		thread_do(int action, pthread_t *thread,
-			void *(*routine)(void *), void *data);
-int		mutex_do(int action, pthread_mutex_t *mutex);
-int		print_if_error(int action, int status);
 int		print_error(int error_code);
 
 /* CLEAN UP */

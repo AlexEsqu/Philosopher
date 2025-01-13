@@ -6,15 +6,15 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 23:16:48 by alex              #+#    #+#             */
-/*   Updated: 2025/01/11 18:57:19 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/13 11:19:32 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	write_status_debug(int status, t_philo *philo, long elapsed)
+int	write_status_debug(int status, t_philo *philo)
 {
-	printf("%-6ld %d ", elapsed, philo->id);
+	printf("%ld %d ", get_actual_time(), philo->id);
 	if (status == TAKE_FIRST_FORK && !dinner_has_ended(philo->waiter))
 		printf("has taken a fork\n");
 	if (status == TAKE_SECOND_FORK && !dinner_has_ended(philo->waiter))
@@ -32,16 +32,13 @@ int	write_status_debug(int status, t_philo *philo, long elapsed)
 
 int	write_status(int status, t_philo *philo, bool debug)
 {
-	long	elapsed;
-
-	elapsed = get_miliseconds();
 	if (pthread_mutex_lock(&philo->waiter->write_mutex) != 0)
 		return (1);
 	if (debug)
-		write_status_debug(status, philo, elapsed);
+		write_status_debug(status, philo);
 	else if (!dinner_has_ended(philo->waiter))
 	{
-		printf("%ld %d ", elapsed, philo->id);
+		printf("%ld %d ", get_actual_time(), philo->id);
 		if (status == TAKE_FIRST_FORK || status == TAKE_SECOND_FORK)
 			printf("has taken a fork\n");
 		else if (status == EATING)
@@ -60,8 +57,12 @@ int	write_status(int status, t_philo *philo, bool debug)
 
 int	is_starving(t_philo *philo)
 {
-	return (philo->last_meal_time - get_miliseconds()
-		> philo->waiter->time_to_die);
+	long	last_meal_time;
+	long	since_last_meal;
+
+	last_meal_time = getter(&philo->philo_mutex, &philo->last_meal_time);
+	since_last_meal = get_actual_time() - last_meal_time;
+	return (last_meal_time > philo->waiter->time_to_die);
 }
 
 int	starvation(t_waiter *waiter)
@@ -74,8 +75,9 @@ int	starvation(t_waiter *waiter)
 		while (!dinner_has_ended(waiter) && i < waiter->philo_total)
 		{
 			if (is_starving(&waiter->philo_array[i]))
-				setter(&waiter->table_mutex, waiter->is_end, true);
+				setter(&waiter->table_mutex, &waiter->is_end, true);
 		}
 		micro_usleep(10, waiter);
 	}
+	return (0);
 }
