@@ -6,7 +6,7 @@
 /*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 20:58:54 by alex              #+#    #+#             */
-/*   Updated: 2025/01/14 00:17:20 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/14 10:22:20 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int	setter(pthread_mutex_t *mutex, int *destination, int value)
 	printf("SETTER: lock mutex %p\n", mutex);
 	if (pthread_mutex_lock(mutex) != 0)
 		return (1);
-	printf("Destination is %d, value is %d\n", *destination, value);
 	*destination = value;
 	if (pthread_mutex_unlock(mutex) != 0)
 		return (1);

@@ -6,7 +6,7 @@
 #    By: alex <alex@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/14 14:56:12 by mkling            #+#    #+#              #
-#    Updated: 2025/01/14 00:03:06 by alex             ###   ########.fr        #
+#    Updated: 2025/01/14 10:44:45 by alex             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME		= philo
 
 MAIN		= main.c
 
-FUNC		= routine.c error.c monitor.c parsing.c setup.c time.c
+FUNC		= parsing.c setup.c routine.c monitor.c time.c error.c
 
 SRC_DIR		= src
 

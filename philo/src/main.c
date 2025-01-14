@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
+/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:01 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/13 13:41:08 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/14 10:52:23 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,56 @@ bool	dinner_has_ended(t_waiter *waiter)
 	return (getter(&waiter->waiter_mutex, &waiter->is_dinner_ongoing) == true);
 }
 
+int	start_dinner(t_waiter *waiter)
+{
+	int	i;
+
+	if (waiter->philo_total == 1)
+		return (lonely_dinner(waiter->philo_array[0]));
+	i = 0;
+	while (i < waiter->philo_total)
+	{
+		if (pthread_create(&waiter->philo_array[i]->thread,
+				NULL, dine, &waiter->philo_array[i]) != 0)
+			return (print_error(ERR_THREAD));
+		i++;
+	}
+	waiter->start_time = get_miliseconds();
+	if (waiter->start_time == 0)
+		return (print_error(ERR_TIME));
+	setter(&waiter->waiter_mutex, &waiter->is_ready, true);
+	return (SUCCESS);
+}
+
+int	stop_dinner(t_waiter *waiter)
+{
+	int	i;
+
+	i = 0;
+	while (i < waiter->philo_total)
+	{
+		if (pthread_join(waiter->philo_array[i]->thread, NULL) != 0)
+			return (print_error(ERR_THREAD));
+		i++;
+	}
+	pthread_mutex_destroy(&waiter->waiter_mutex);
+	pthread_mutex_destroy(&waiter->write_mutex);
+	free_waiter(waiter);
+	return (0);
+}
+
 int	main(int argc, char **argv)
 {
 	t_waiter	waiter;
 
 	if (parse_for_waiter(argc, argv, &waiter) != 0)
-		return (1);
+		return (ERR_GENERAL);
 	printf("Waiter is set\n");
 	if (set_table(&waiter) != 0)
-		return (1);
+		return (ERR_GENERAL);
 	printf("Table is set\n");
-	start_dinner(&waiter);
-	clean_up(&waiter);
-	return (0);
+	if (start_dinner(&waiter) != 0)
+		return (ERR_GENERAL);
+	stop_dinner(&waiter);
+	return (SUCCESS);
 }

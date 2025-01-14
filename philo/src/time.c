@@ -6,7 +6,7 @@
 /*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 15:36:42 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/14 00:22:37 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/14 10:39:53 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,7 @@ size_t	get_miliseconds(void)
 	struct timeval	time;
 
 	if (gettimeofday(&time, NULL) == -1)
-	{
-		printf("Failed to get the time through gettimeofday");
 		return (0);
-	}
 	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
 
@@ -29,7 +26,6 @@ size_t	get_actual_time(void)
 {
 	static size_t	start_time;
 
-	printf("time is %zu\n", start_time);
 	if (start_time == 0)
 		start_time = get_miliseconds();
 	return (get_miliseconds() - start_time);

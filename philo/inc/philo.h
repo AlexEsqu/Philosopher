@@ -6,7 +6,7 @@
 /*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:26 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/14 00:16:20 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/14 10:46:54 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ enum e_errors
 	ERR_MALLOC,
 	ERR_MUTEX,
 	ERR_THREAD,
+	ERR_TIME,
 };
 
 typedef struct s_philo
@@ -96,6 +97,12 @@ int		parse_for_waiter(int argc, char **argv, t_waiter *waiter);
 int		set_table(t_waiter *waiter);
 void	wait_until_philo_are_seated(t_waiter *waiter);
 int		start_dinner(t_waiter *waiter);
+int		stop_dinner(t_waiter *waiter);
+
+/* ROUTINE */
+
+void	*dine(void *data);
+int		lonely_dinner(t_philo *philo);
 
 /* MONITORING */
 
@@ -116,6 +123,6 @@ int		print_error(int error_code);
 
 /* CLEAN UP */
 
-void	clean_up(t_waiter *waiter);
+void	free_waiter(t_waiter *waiter);
 
 #endif
