@@ -6,7 +6,7 @@
 /*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:26 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/14 10:46:54 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/14 11:04:11 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ int		stop_dinner(t_waiter *waiter);
 
 void	*dine(void *data);
 int		lonely_dinner(t_philo *philo);
+int		check_for_starvation(t_waiter *waiter);
 
 /* MONITORING */
 

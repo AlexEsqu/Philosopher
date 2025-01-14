@@ -6,7 +6,7 @@
 /*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:01 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/14 10:52:23 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/14 11:05:45 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	start_dinner(t_waiter *waiter)
 	while (i < waiter->philo_total)
 	{
 		if (pthread_create(&waiter->philo_array[i]->thread,
-				NULL, dine, &waiter->philo_array[i]) != 0)
+				NULL, dine, waiter->philo_array[i]) != 0)
 			return (print_error(ERR_THREAD));
 		i++;
 	}
@@ -44,11 +44,7 @@ int	stop_dinner(t_waiter *waiter)
 
 	i = 0;
 	while (i < waiter->philo_total)
-	{
-		if (pthread_join(waiter->philo_array[i]->thread, NULL) != 0)
-			return (print_error(ERR_THREAD));
-		i++;
-	}
+		pthread_join(waiter->philo_array[i++]->thread, NULL);
 	pthread_mutex_destroy(&waiter->waiter_mutex);
 	pthread_mutex_destroy(&waiter->write_mutex);
 	free_waiter(waiter);
@@ -66,6 +62,8 @@ int	main(int argc, char **argv)
 		return (ERR_GENERAL);
 	printf("Table is set\n");
 	if (start_dinner(&waiter) != 0)
+		return (ERR_GENERAL);
+	if (check_for_starvation(&waiter) != 0)
 		return (ERR_GENERAL);
 	stop_dinner(&waiter);
 	return (SUCCESS);

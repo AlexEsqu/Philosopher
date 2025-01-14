@@ -6,7 +6,7 @@
 /*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 23:16:48 by alex              #+#    #+#             */
-/*   Updated: 2025/01/14 00:24:16 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/14 11:04:02 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,18 @@
 
 int	write_status_debug(int status, t_philo *philo)
 {
-	printf("%ld %d ", get_actual_time(), philo->id);
 	if (status == TAKE_FIRST_FORK && !dinner_has_ended(philo->waiter))
-		printf("has taken a fork\n");
+		printf("%ld %d has taken a fork\n", get_actual_time(), philo->id);
 	if (status == TAKE_SECOND_FORK && !dinner_has_ended(philo->waiter))
-		printf("has taken the second fork\n");
+		printf("%ld %d has taken the second fork\n", get_actual_time(), philo->id);
 	else if (status == EATING && !dinner_has_ended(philo->waiter))
-		printf("is eating their %d th meal\n", philo->meal_count);
+		printf("%ld %d is eating their %d th meal\n", get_actual_time(), philo->id, philo->meal_count);
 	else if (status == SLEEPING && !dinner_has_ended(philo->waiter))
-		printf("is sleeping\n");
+		printf("%ld %d is sleeping\n", get_actual_time(), philo->id);
 	else if (status == THINKING && !dinner_has_ended(philo->waiter))
-		printf("is thinking\n");
+		printf("%ld %d is thinking\n", get_actual_time(), philo->id);
 	else if (status == DIED)
-		printf("died\n");
+		printf("%ld %d died\n", get_actual_time(), philo->id);
 	return (0);
 }
 
@@ -64,7 +63,7 @@ int	is_starving(t_philo *philo)
 	return (since_last_meal > philo->waiter->time_to_die);
 }
 
-int	starvation(t_waiter *waiter)
+int	check_for_starvation(t_waiter *waiter)
 {
 	int	i;
 
