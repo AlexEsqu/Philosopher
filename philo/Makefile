@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: alex <alex@student.42.fr>                  +#+  +:+       +#+         #
+#    By: mkling <mkling@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/14 14:56:12 by mkling            #+#    #+#              #
-#    Updated: 2025/01/14 10:44:45 by alex             ###   ########.fr        #
+#    Updated: 2025/01/15 11:53:38 by mkling           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,8 +46,11 @@ $(OBJ_DIR)/%.o:		$(SRC_DIR)/%.c
 $(OBJ_DIR):
 			mkdir -p $@
 
-debug:
+sanitize:
 			$(CC) $(CFLAGS) $(INC) -g3 -fsanitize=thread -o $(NAME) $(SRCS)
+
+debug:
+			$(CC) $(CFLAGS) $(INC) -g3 -o $(NAME) $(SRCS)
 
 clean:
 			rm -rf $(OBJ_DIR)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:01 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/14 11:05:45 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/15 12:14:59 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 bool	dinner_has_ended(t_waiter *waiter)
 {
-	return (getter(&waiter->waiter_mutex, &waiter->is_dinner_ongoing) == true);
+	return (getter(&waiter->waiter_mutex, &waiter->is_dinner_ongoing) != true);
 }
 
 int	start_dinner(t_waiter *waiter)
@@ -34,7 +34,7 @@ int	start_dinner(t_waiter *waiter)
 	waiter->start_time = get_miliseconds();
 	if (waiter->start_time == 0)
 		return (print_error(ERR_TIME));
-	setter(&waiter->waiter_mutex, &waiter->is_ready, true);
+	setter(&waiter->waiter_mutex, &waiter->is_dinner_ongoing, true);
 	return (SUCCESS);
 }
 
@@ -44,7 +44,10 @@ int	stop_dinner(t_waiter *waiter)
 
 	i = 0;
 	while (i < waiter->philo_total)
-		pthread_join(waiter->philo_array[i++]->thread, NULL);
+	{
+		pthread_join(waiter->philo_array[i]->thread, NULL);
+		i++;
+	}
 	pthread_mutex_destroy(&waiter->waiter_mutex);
 	pthread_mutex_destroy(&waiter->write_mutex);
 	free_waiter(waiter);
@@ -57,10 +60,8 @@ int	main(int argc, char **argv)
 
 	if (parse_for_waiter(argc, argv, &waiter) != 0)
 		return (ERR_GENERAL);
-	printf("Waiter is set\n");
 	if (set_table(&waiter) != 0)
 		return (ERR_GENERAL);
-	printf("Table is set\n");
 	if (start_dinner(&waiter) != 0)
 		return (ERR_GENERAL);
 	if (check_for_starvation(&waiter) != 0)

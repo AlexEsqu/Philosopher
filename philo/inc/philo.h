@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:26 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/14 11:04:11 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/15 12:15:39 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ typedef struct s_philo
 typedef struct s_waiter
 {
 	int				is_dinner_ongoing;
-	int				is_ready;
 	int				philo_total;
 	int				time_to_die;
 	int				time_to_eat;
@@ -98,6 +97,7 @@ int		set_table(t_waiter *waiter);
 void	wait_until_philo_are_seated(t_waiter *waiter);
 int		start_dinner(t_waiter *waiter);
 int		stop_dinner(t_waiter *waiter);
+void	*ft_calloc(size_t nbr, size_t size);
 
 /* ROUTINE */
 

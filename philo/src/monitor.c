@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 23:16:48 by alex              #+#    #+#             */
-/*   Updated: 2025/01/14 11:04:02 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/15 12:01:47 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	write_status_debug(int status, t_philo *philo)
 	if (status == TAKE_FIRST_FORK && !dinner_has_ended(philo->waiter))
 		printf("%ld %d has taken a fork\n", get_actual_time(), philo->id);
 	if (status == TAKE_SECOND_FORK && !dinner_has_ended(philo->waiter))
-		printf("%ld %d has taken the second fork\n", get_actual_time(), philo->id);
+		printf("%ld %d has taken a second fork\n", get_actual_time(), philo->id);
 	else if (status == EATING && !dinner_has_ended(philo->waiter))
 		printf("%ld %d is eating their %d th meal\n", get_actual_time(), philo->id, philo->meal_count);
 	else if (status == SLEEPING && !dinner_has_ended(philo->waiter))
@@ -72,7 +72,6 @@ int	check_for_starvation(t_waiter *waiter)
 		i = 0;
 		while (!dinner_has_ended(waiter) && i < waiter->philo_total)
 		{
-			printf("is in starvation\n");
 			if (is_starving(waiter->philo_array[i]))
 				setter(&waiter->waiter_mutex, &waiter->is_dinner_ongoing, true);
 		}
