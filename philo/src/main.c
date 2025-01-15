@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:01 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/15 14:11:57 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/15 14:14:53 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,7 @@ int	stop_dinner(t_waiter *waiter)
 
 	i = 0;
 	while (i < waiter->philo_total)
-	{
-		pthread_join(waiter->philo_array[i]->thread, NULL);
-		i++;
-	}
+		pthread_join(waiter->philo_array[i++]->thread, NULL);
 	pthread_mutex_destroy(&waiter->waiter_mutex);
 	pthread_mutex_destroy(&waiter->write_mutex);
 	free_waiter(waiter);

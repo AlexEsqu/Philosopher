@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 23:16:48 by alex              #+#    #+#             */
-/*   Updated: 2025/01/15 14:11:36 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/15 14:27:14 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,11 +81,11 @@ int	check_if_starving_or_sated(t_waiter *waiter)
 				write_status(DIED, waiter->philo_array[i], true);
 			}
 			if (getter(&waiter->philo_array[i]->philo_mutex,
-					&waiter->philo_array[i]->is_sated) == true)
+					&waiter->philo_array[i]->is_sated))
 				sated_count++;
+			if (sated_count == waiter->philo_total)
+				setter(&waiter->waiter_mutex, &waiter->is_dinner_ongoing, false);
 		}
-		if (sated_count == waiter->philo_total)
-			break ;
 		micro_usleep(10, waiter);
 	}
 	return (0);
