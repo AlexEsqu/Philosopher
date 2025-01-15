@@ -6,7 +6,7 @@
 #    By: mkling <mkling@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/14 14:56:12 by mkling            #+#    #+#              #
-#    Updated: 2025/01/15 11:53:38 by mkling           ###   ########.fr        #
+#    Updated: 2025/01/15 21:27:39 by mkling           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,7 @@ $(OBJ_DIR):
 			mkdir -p $@
 
 sanitize:
-			$(CC) $(CFLAGS) $(INC) -g3 -fsanitize=thread -o $(NAME) $(SRCS)
+			$(CC) $(CFLAGS) $(INC) -g3 -pthread -fsanitize=thread -o $(NAME) $(SRCS)
 
 debug:
 			$(CC) $(CFLAGS) $(INC) -g3 -o $(NAME) $(SRCS)

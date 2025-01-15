@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 23:16:48 by alex              #+#    #+#             */
-/*   Updated: 2025/01/15 19:40:30 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/15 21:10:32 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 bool	dinner_has_ended(t_waiter *waiter)
 {
-	return (getter(&waiter->waiter_mutex, &waiter->is_dinner_ongoing) != true);
+	return (getter(&waiter->waiter_mutex, &waiter->is_on) != true);
 }
 
 int	write_status_debug(int status, t_philo *philo)
@@ -61,12 +61,16 @@ int	write_status(int status, t_philo *philo, bool debug)
 
 int	is_starving(t_philo *philo)
 {
-	long	last_meal_time;
-	long	since_last_meal;
+	size_t	last_meal_time;
+	int		since_last_meal;
 
-	last_meal_time = getter(&philo->philo_mutex, &philo->last_meal_time);
-	since_last_meal = get_actual_time(philo) - last_meal_time;
-	return (since_last_meal > philo->waiter->time_to_die);
+	if (pthread_mutex_lock(&philo->philo_mutex) != 0)
+		return (ERR_MUTEX);
+	last_meal_time = philo->last_meal_time;
+	if (pthread_mutex_unlock(&philo->philo_mutex) != 0)
+		return (ERR_MUTEX);
+	since_last_meal = (get_actual_time(philo) - last_meal_time);
+	return (since_last_meal > philo->time_to_die);
 }
 
 int	check_if_starving_or_sated(t_waiter *waiter)
@@ -82,16 +86,14 @@ int	check_if_starving_or_sated(t_waiter *waiter)
 		{
 			if (is_starving(waiter->philo_array[i]))
 			{
-				setter(&waiter->waiter_mutex,
-					&waiter->is_dinner_ongoing, false);
+				setter(&waiter->waiter_mutex, &waiter->is_on, false);
 				write_status(DIED, waiter->philo_array[i], true);
 			}
 			if (getter(&waiter->philo_array[i]->philo_mutex,
 					&waiter->philo_array[i]->is_sated))
 				sated_count++;
 			if (sated_count == waiter->philo_total)
-				setter(&waiter->waiter_mutex,
-					&waiter->is_dinner_ongoing, false);
+				setter(&waiter->waiter_mutex, &waiter->is_on, false);
 		}
 		micro_usleep(10, waiter);
 	}

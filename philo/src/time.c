@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 15:36:42 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/15 19:38:01 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/15 21:46:16 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,6 @@ int	set_start_time(t_waiter *waiter)
 
 void	wait_until_philo_are_seated(t_waiter *waiter)
 {
-	while (getter(&waiter->waiter_mutex, &waiter->is_dinner_ongoing) == false)
-		usleep(10);
+	while (getter(&waiter->waiter_mutex, &waiter->is_on) == false)
+		;
 }

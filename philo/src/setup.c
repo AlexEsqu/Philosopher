@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 20:58:54 by alex              #+#    #+#             */
-/*   Updated: 2025/01/15 17:06:37 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/15 20:57:23 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ static int	seat_philosophers(t_waiter *waiter)
 		philo->time_to_die = waiter->time_to_die;
 		philo->time_to_eat = waiter->time_to_eat;
 		philo->time_to_sleep = waiter->time_to_sleep;
+		philo->max_meals = waiter->max_meals;
 		philo->waiter = waiter;
 		waiter->philo_array[seat] = philo;
 		if (pthread_mutex_init(&philo->philo_mutex, NULL) != 0)
@@ -85,7 +86,7 @@ static int	seat_philosophers(t_waiter *waiter)
 
 int	set_table(t_waiter *waiter)
 {
-	waiter->is_dinner_ongoing = false;
+	waiter->is_on = false;
 	if (pthread_mutex_init(&waiter->waiter_mutex, NULL) != 0)
 		return (print_error(ERR_MUTEX));
 	if (pthread_mutex_init(&waiter->write_mutex, NULL) != 0)

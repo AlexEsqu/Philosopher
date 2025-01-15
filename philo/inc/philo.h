@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:26 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/15 17:42:25 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/15 21:54:05 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,9 @@ typedef struct s_philo
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				max_meals;
-	size_t			start_time;
 	int				meal_count;
-	int				last_meal_time;
+	size_t			start_time;
+	size_t			last_meal_time;
 	pthread_mutex_t	left_fork;
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	philo_mutex;
@@ -80,7 +80,7 @@ typedef struct s_philo
 
 typedef struct s_waiter
 {
-	int				is_dinner_ongoing;
+	int				is_on;
 	int				philo_total;
 	int				time_to_die;
 	int				time_to_eat;
@@ -101,8 +101,6 @@ int		parse_for_waiter(int argc, char **argv, t_waiter *waiter);
 int		set_table(t_waiter *waiter);
 void	wait_until_philo_are_seated(t_waiter *waiter);
 int		start_dinner(t_waiter *waiter);
-int		stop_dinner(t_waiter *waiter);
-void	*ft_calloc(size_t nbr, size_t size);
 int		set_start_time(t_waiter *waiter);
 
 /* ROUTINE */
@@ -123,6 +121,7 @@ bool	dinner_has_ended(t_waiter *waiter);
 
 int		setter(pthread_mutex_t *mutex, int *destination, int value);
 int		getter(pthread_mutex_t *mutex, int *value);
+void	*ft_calloc(size_t nbr, size_t size);
 
 /* ERROR HANDLING */
 
@@ -130,6 +129,7 @@ int		print_error(int error_code);
 
 /* CLEAN UP */
 
+int		stop_dinner(t_waiter *waiter);
 void	free_waiter(t_waiter *waiter);
 
 #endif
