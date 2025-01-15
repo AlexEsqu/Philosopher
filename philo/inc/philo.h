@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:26 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/15 14:11:42 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/15 17:42:25 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,11 @@ typedef struct s_philo
 {
 	int				id;
 	int				is_sated;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				max_meals;
+	size_t			start_time;
 	int				meal_count;
 	int				last_meal_time;
 	pthread_mutex_t	left_fork;
@@ -81,7 +86,7 @@ typedef struct s_waiter
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				max_meals;
-	int				start_time;
+	size_t			start_time;
 	t_philo			**philo_array;
 	pthread_mutex_t	waiter_mutex;
 	pthread_mutex_t	write_mutex;
@@ -98,6 +103,7 @@ void	wait_until_philo_are_seated(t_waiter *waiter);
 int		start_dinner(t_waiter *waiter);
 int		stop_dinner(t_waiter *waiter);
 void	*ft_calloc(size_t nbr, size_t size);
+int		set_start_time(t_waiter *waiter);
 
 /* ROUTINE */
 
@@ -108,7 +114,7 @@ int		check_if_starving_or_sated(t_waiter *waiter);
 /* MONITORING */
 
 int		write_status(int status, t_philo *philo, bool debug);
-size_t	get_actual_time(void);
+size_t	get_actual_time(t_philo *waiter);
 size_t	get_miliseconds(void);
 void	micro_usleep(size_t wait_time, t_waiter *waiter);
 bool	dinner_has_ended(t_waiter *waiter);

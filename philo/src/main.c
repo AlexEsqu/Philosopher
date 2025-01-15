@@ -6,16 +6,11 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:01 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/15 14:14:53 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/15 19:37:26 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-bool	dinner_has_ended(t_waiter *waiter)
-{
-	return (getter(&waiter->waiter_mutex, &waiter->is_dinner_ongoing) != true);
-}
 
 int	start_dinner(t_waiter *waiter)
 {
@@ -31,9 +26,8 @@ int	start_dinner(t_waiter *waiter)
 			return (print_error(ERR_THREAD));
 		i++;
 	}
-	waiter->start_time = get_miliseconds();
-	if (waiter->start_time == 0)
-		return (print_error(ERR_TIME));
+	if (set_start_time(waiter) != 0)
+		return (ERR_GENERAL);
 	setter(&waiter->waiter_mutex, &waiter->is_dinner_ongoing, true);
 	return (SUCCESS);
 }
@@ -63,6 +57,7 @@ int	main(int argc, char **argv)
 		return (ERR_GENERAL);
 	if (check_if_starving_or_sated(&waiter) != 0)
 		return (ERR_GENERAL);
+	usleep(100);
 	stop_dinner(&waiter);
 	return (SUCCESS);
 }

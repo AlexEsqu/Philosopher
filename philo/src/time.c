@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 15:36:42 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/15 12:14:54 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/15 19:38:01 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,9 @@ size_t	get_miliseconds(void)
 	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
 
-size_t	get_actual_time(void)
+size_t	get_actual_time(t_philo *philo)
 {
-	static size_t	start_time;
-
-	if (start_time == 0)
-		start_time = get_miliseconds();
-	return (get_miliseconds() - start_time);
+	return (get_miliseconds() - philo->start_time);
 }
 
 void	micro_usleep(size_t wait_time, t_waiter *waiter)
@@ -54,8 +50,25 @@ void	micro_usleep(size_t wait_time, t_waiter *waiter)
 	}
 }
 
+/* No need for mutex because applies before routine starts */
+int	set_start_time(t_waiter *waiter)
+{
+	int	i;
+
+	waiter->start_time = get_miliseconds();
+	if (waiter->start_time == 0)
+		return (print_error(ERR_TIME));
+	i = 0;
+	while (i < waiter->philo_total)
+	{
+		waiter->philo_array[i]->last_meal_time = waiter->start_time;
+		waiter->philo_array[i++]->start_time = waiter->start_time;
+	}
+	return (SUCCESS);
+}
+
 void	wait_until_philo_are_seated(t_waiter *waiter)
 {
 	while (getter(&waiter->waiter_mutex, &waiter->is_dinner_ongoing) == false)
-		micro_usleep(10, waiter);
+		usleep(10);
 }

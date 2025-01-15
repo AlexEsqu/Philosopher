@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 20:58:54 by alex              #+#    #+#             */
-/*   Updated: 2025/01/15 12:15:36 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/15 17:06:37 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,11 @@
 
 int	setter(pthread_mutex_t *mutex, int *destination, int value)
 {
-	// printf("SETTER: lock mutex %p\n", mutex);
 	if (pthread_mutex_lock(mutex) != 0)
 		return (1);
 	*destination = value;
 	if (pthread_mutex_unlock(mutex) != 0)
 		return (1);
-	// printf("SETTER: unlock mutex %p\n", mutex);
 	return (0);
 }
 
@@ -28,7 +26,6 @@ int	getter(pthread_mutex_t *mutex, int *value)
 {
 	int	result;
 
-	// printf("GETTER: lock mutex %p\n", mutex);
 	if (!mutex || !value)
 		return (print_error(ERR_MUTEX));
 	if (pthread_mutex_lock(mutex) != 0)
@@ -36,7 +33,6 @@ int	getter(pthread_mutex_t *mutex, int *value)
 	result = *value;
 	if (pthread_mutex_unlock(mutex) != 0)
 		return (print_error(ERR_MUTEX));
-	// printf("GETTER: unlock mutex %p\n", mutex);
 	return (result);
 }
 
@@ -71,7 +67,11 @@ static int	seat_philosophers(t_waiter *waiter)
 		philo = ft_calloc(1, sizeof(t_philo));
 		philo->id = seat + 1;
 		philo->is_sated = false;
+		philo->start_time = -1;
 		philo->meal_count = 0;
+		philo->time_to_die = waiter->time_to_die;
+		philo->time_to_eat = waiter->time_to_eat;
+		philo->time_to_sleep = waiter->time_to_sleep;
 		philo->waiter = waiter;
 		waiter->philo_array[seat] = philo;
 		if (pthread_mutex_init(&philo->philo_mutex, NULL) != 0)
