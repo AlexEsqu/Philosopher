@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:26 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/15 12:15:39 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/15 14:11:42 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ void	*ft_calloc(size_t nbr, size_t size);
 
 void	*dine(void *data);
 int		lonely_dinner(t_philo *philo);
-int		check_for_starvation(t_waiter *waiter);
+int		check_if_starving_or_sated(t_waiter *waiter);
 
 /* MONITORING */
 

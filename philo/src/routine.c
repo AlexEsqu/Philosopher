@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 21:37:38 by alex              #+#    #+#             */
-/*   Updated: 2025/01/15 12:01:11 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/15 14:05:09 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,17 +52,20 @@ static void	eat(t_philo *philo,
 void	*dine(void *data)
 {
 	t_philo	*philo;
+	int		meal_count;
 
 	philo = (t_philo *)data;
+	meal_count = 0;
 	wait_until_philo_are_seated(philo->waiter);
 	while (!dinner_has_ended(philo->waiter))
 	{
-		if (philo->is_sated)
+		if (meal_count == philo->waiter->max_meals)
 			break ;
 		if (philo->id % 2 == 0)
 			eat(philo, &philo->left_fork, philo->right_fork);
-		if (philo->id % 2 != 0)
+		else
 			eat(philo, philo->right_fork, &philo->left_fork);
+		meal_count++;
 		write_status(SLEEPING, philo, true);
 		micro_usleep(philo->waiter->time_to_sleep, philo->waiter);
 		think(philo);

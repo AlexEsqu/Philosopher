@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:01 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/15 12:14:59 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/15 14:11:57 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int	main(int argc, char **argv)
 		return (ERR_GENERAL);
 	if (start_dinner(&waiter) != 0)
 		return (ERR_GENERAL);
-	if (check_for_starvation(&waiter) != 0)
+	if (check_if_starving_or_sated(&waiter) != 0)
 		return (ERR_GENERAL);
 	stop_dinner(&waiter);
 	return (SUCCESS);
