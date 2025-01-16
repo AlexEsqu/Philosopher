@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 15:36:42 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/16 13:56:11 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/16 17:28:00 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	smol_sleep(int wait_time)
 	start = get_miliseconds();
 	while (get_miliseconds() - start < wait_time)
 	{
-		usleep(100);
+		usleep(10);
 	}
 }
 
@@ -58,5 +58,5 @@ int	set_start_time(t_waiter *waiter)
 void	wait_until_philo_are_seated(t_waiter *waiter)
 {
 	while (getter(&waiter->waiter_mutex, &waiter->is_on) == false)
-		smol_sleep(10);
+		;
 }

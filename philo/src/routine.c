@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 21:37:38 by alex              #+#    #+#             */
-/*   Updated: 2025/01/16 14:21:06 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/16 17:33:48 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,12 @@ int	lonely_dinner(t_philo *philo)
 
 static void	think(t_philo *philo)
 {
-	long	time_to_think;
+	// long	time_to_think;
 
-	pthread_mutex_lock(&philo->philo_mutex);
-	time_to_think = (philo->time_to_die - (get_actual_time(philo)
-				- philo->last_meal_time) - philo->time_to_eat) / 2;
-	pthread_mutex_unlock(&philo->philo_mutex);
+	// pthread_mutex_lock(&philo->philo_mutex);
+	// time_to_think = (philo->time_to_die - (get_actual_time(philo)
+	// 			- philo->last_meal_time) - philo->time_to_eat) / 2;
+	// pthread_mutex_unlock(&philo->philo_mutex);
 	write_status(THINKING, philo, 1);
 	smol_sleep(1);
 }
