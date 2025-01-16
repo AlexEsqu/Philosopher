@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 21:37:38 by alex              #+#    #+#             */
-/*   Updated: 2025/01/16 14:03:57 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/16 14:21:06 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,8 @@ static void	think(t_philo *philo)
 	time_to_think = (philo->time_to_die - (get_actual_time(philo)
 				- philo->last_meal_time) - philo->time_to_eat) / 2;
 	pthread_mutex_unlock(&philo->philo_mutex);
-	if (time_to_think < 0)
-		time_to_think = 1;
-	if (time_to_think > 600)
-		time_to_think = 200;
 	write_status(THINKING, philo, 1);
-	smol_sleep(time_to_think);
+	smol_sleep(1);
 }
 
 /* Locks first fork, report, locks second fork, report, set last meal time,

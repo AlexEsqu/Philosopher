@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:01 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/16 14:09:17 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/16 15:17:00 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	start_dinner(t_waiter *waiter)
 			return (print_error(ERR_THREAD));
 		i++;
 	}
-	smol_sleep(10);
+	smol_sleep(100);
 	if (set_start_time(waiter) != 0)
 		return (ERR_TIME);
 	setter(&waiter->waiter_mutex, &waiter->is_on, true);
@@ -45,7 +45,7 @@ int	stop_dinner(t_waiter *waiter)
 	pthread_mutex_destroy(&waiter->waiter_mutex);
 	pthread_mutex_destroy(&waiter->write_mutex);
 	free_waiter(waiter);
-	return (0);
+	return (SUCCESS);
 }
 
 int	main(int argc, char **argv)
