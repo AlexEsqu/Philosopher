@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
+/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:01 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/15 21:49:57 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/16 10:05:54 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int	start_dinner(t_waiter *waiter)
 			return (print_error(ERR_THREAD));
 		i++;
 	}
+	micro_usleep(10, waiter);
 	if (set_start_time(waiter) != 0)
 		return (ERR_GENERAL);
 	setter(&waiter->waiter_mutex, &waiter->is_on, true);
@@ -37,6 +38,7 @@ int	stop_dinner(t_waiter *waiter)
 	int	i;
 
 	i = 0;
+	usleep(10);
 	while (i < waiter->philo_total)
 		pthread_join(waiter->philo_array[i++]->thread, NULL);
 	pthread_mutex_destroy(&waiter->waiter_mutex);

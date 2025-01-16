@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
+/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:26 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/15 21:54:05 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/16 09:58:33 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ int		check_if_starving_or_sated(t_waiter *waiter);
 /* MONITORING */
 
 int		write_status(int status, t_philo *philo, bool debug);
-size_t	get_actual_time(t_philo *waiter);
+size_t	get_actual_time(t_philo *philo);
 size_t	get_miliseconds(void);
 void	micro_usleep(size_t wait_time, t_waiter *waiter);
 bool	dinner_has_ended(t_waiter *waiter);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
+/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 23:16:48 by alex              #+#    #+#             */
-/*   Updated: 2025/01/15 21:10:32 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/16 09:43:06 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,18 +59,25 @@ int	write_status(int status, t_philo *philo, bool debug)
 	return (0);
 }
 
-int	is_starving(t_philo *philo)
+bool	starving_or_sated(t_philo *philo, int *sated_count)
 {
-	size_t	last_meal_time;
-	int		since_last_meal;
+	bool	is_starved;
 
-	if (pthread_mutex_lock(&philo->philo_mutex) != 0)
-		return (ERR_MUTEX);
-	last_meal_time = philo->last_meal_time;
-	if (pthread_mutex_unlock(&philo->philo_mutex) != 0)
-		return (ERR_MUTEX);
-	since_last_meal = (get_actual_time(philo) - last_meal_time);
-	return (since_last_meal > philo->time_to_die);
+	pthread_mutex_lock(&philo->philo_mutex);
+	{
+		is_starved = (get_actual_time(philo) - philo->last_meal_time);
+		if (philo->is_sated)
+			*sated_count = *sated_count + 1;
+	}
+	pthread_mutex_unlock(&philo->philo_mutex);
+	if (is_starved || *sated_count == philo->waiter->philo_total)
+	{
+		setter(&philo->waiter->waiter_mutex, &philo->waiter->is_on, false);
+		if (is_starved)
+			write_status(DIED, philo, true);
+		return (true);
+	}
+	return (false);
 }
 
 int	check_if_starving_or_sated(t_waiter *waiter)
@@ -82,20 +89,12 @@ int	check_if_starving_or_sated(t_waiter *waiter)
 	{
 		i = 0;
 		sated_count = 0;
-		while (!dinner_has_ended(waiter) && i < waiter->philo_total)
+		while (i < waiter->philo_total)
 		{
-			if (is_starving(waiter->philo_array[i]))
-			{
-				setter(&waiter->waiter_mutex, &waiter->is_on, false);
-				write_status(DIED, waiter->philo_array[i], true);
-			}
-			if (getter(&waiter->philo_array[i]->philo_mutex,
-					&waiter->philo_array[i]->is_sated))
-				sated_count++;
-			if (sated_count == waiter->philo_total)
-				setter(&waiter->waiter_mutex, &waiter->is_on, false);
+			if (starving_or_sated(waiter->philo_array[i++], &sated_count))
+				return (SUCCESS);
 		}
-		micro_usleep(10, waiter);
+		usleep(1000);
 	}
-	return (0);
+	return (ERR_GENERAL);
 }

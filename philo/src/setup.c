@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setup.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
+/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 20:58:54 by alex              #+#    #+#             */
-/*   Updated: 2025/01/15 20:57:23 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/16 10:07:06 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,10 @@ static int	seat_philosophers(t_waiter *waiter)
 		philo->is_sated = false;
 		philo->start_time = -1;
 		philo->meal_count = 0;
-		philo->time_to_die = waiter->time_to_die;
-		philo->time_to_eat = waiter->time_to_eat;
-		philo->time_to_sleep = waiter->time_to_sleep;
-		philo->max_meals = waiter->max_meals;
+		// philo->time_to_die = waiter->time_to_die;
+		// philo->time_to_eat = waiter->time_to_eat;
+		// philo->time_to_sleep = waiter->time_to_sleep;
+		// philo->max_meals = waiter->max_meals;
 		philo->waiter = waiter;
 		waiter->philo_array[seat] = philo;
 		if (pthread_mutex_init(&philo->philo_mutex, NULL) != 0)
