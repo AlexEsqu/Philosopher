@@ -70,5 +70,5 @@ int	set_start_time(t_waiter *waiter)
 void	wait_until_philo_are_seated(t_waiter *waiter)
 {
 	while (getter(&waiter->waiter_mutex, &waiter->is_on) == false)
-		;
+		micro_usleep(10, waiter);
 }

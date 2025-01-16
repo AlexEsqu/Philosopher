@@ -61,16 +61,20 @@ int	write_status(int status, t_philo *philo, bool debug)
 
 bool	starving_or_sated(t_philo *philo, int *sated_count)
 {
+	int		since_last_meal;
 	bool	is_starved;
+	bool	is_sated;
 
 	pthread_mutex_lock(&philo->philo_mutex);
 	{
-		is_starved = (get_actual_time(philo) - philo->last_meal_time);
+		since_last_meal = (int)(get_actual_time(philo) - philo->last_meal_time);
 		if (philo->is_sated)
 			*sated_count = *sated_count + 1;
 	}
 	pthread_mutex_unlock(&philo->philo_mutex);
-	if (is_starved || *sated_count == philo->waiter->philo_total)
+	is_starved = since_last_meal > philo->time_to_die;
+	is_sated = philo->max_meals && philo->meal_count == philo->max_meals;
+	if (is_starved || is_sated)
 	{
 		setter(&philo->waiter->waiter_mutex, &philo->waiter->is_on, false);
 		if (is_starved)

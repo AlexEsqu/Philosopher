@@ -69,10 +69,10 @@ static int	seat_philosophers(t_waiter *waiter)
 		philo->is_sated = false;
 		philo->start_time = -1;
 		philo->meal_count = 0;
-		// philo->time_to_die = waiter->time_to_die;
-		// philo->time_to_eat = waiter->time_to_eat;
-		// philo->time_to_sleep = waiter->time_to_sleep;
-		// philo->max_meals = waiter->max_meals;
+		philo->time_to_die = waiter->time_to_die;
+		philo->time_to_eat = waiter->time_to_eat;
+		philo->time_to_sleep = waiter->time_to_sleep;
+		philo->max_meals = waiter->max_meals;
 		philo->waiter = waiter;
 		waiter->philo_array[seat] = philo;
 		if (pthread_mutex_init(&philo->philo_mutex, NULL) != 0)
@@ -95,5 +95,6 @@ int	set_table(t_waiter *waiter)
 		return (1);
 	if (assign_right_forks(waiter) != 0)
 		return (ERR_MUTEX);
+	printf("Philo total is %d\n", waiter->philo_total);
 	return (0);
 }
