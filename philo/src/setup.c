@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setup.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 20:58:54 by alex              #+#    #+#             */
-/*   Updated: 2025/01/16 10:07:06 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/16 14:00:05 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,5 @@ int	set_table(t_waiter *waiter)
 		return (1);
 	if (assign_right_forks(waiter) != 0)
 		return (ERR_MUTEX);
-	printf("Philo total is %d\n", waiter->philo_total);
 	return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:01 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/16 10:05:54 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/16 14:09:17 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,19 @@ int	start_dinner(t_waiter *waiter)
 {
 	int	i;
 
-	printf("Philo total is %d\n", waiter->philo_total);
 	if (waiter->philo_total == 1)
 		return (lonely_dinner(waiter->philo_array[0]));
 	i = 0;
 	while (i < waiter->philo_total)
 	{
-		printf("Creating thread %d\n", i);
 		if (pthread_create(&waiter->philo_array[i]->thread,
 				NULL, dine, waiter->philo_array[i]) != 0)
 			return (print_error(ERR_THREAD));
 		i++;
 	}
-	micro_usleep(10, waiter);
-	printf("All threads created\n");
+	smol_sleep(10);
 	if (set_start_time(waiter) != 0)
-		return (ERR_GENERAL);
+		return (ERR_TIME);
 	setter(&waiter->waiter_mutex, &waiter->is_on, true);
 	return (SUCCESS);
 }
@@ -41,7 +38,8 @@ int	stop_dinner(t_waiter *waiter)
 	int	i;
 
 	i = 0;
-	// usleep(10);
+	if (waiter->philo_total == 1)
+		return (free_waiter(waiter), SUCCESS);
 	while (i < waiter->philo_total)
 		pthread_join(waiter->philo_array[i++]->thread, NULL);
 	pthread_mutex_destroy(&waiter->waiter_mutex);

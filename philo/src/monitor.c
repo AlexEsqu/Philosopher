@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 23:16:48 by alex              #+#    #+#             */
-/*   Updated: 2025/01/16 09:43:06 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/16 14:08:34 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,18 @@ bool	dinner_has_ended(t_waiter *waiter)
 int	write_status_debug(int status, t_philo *philo)
 {
 	if (status == TAKE_FIRST_FORK && !dinner_has_ended(philo->waiter))
-		printf("%ld %d has taken a fork\n", get_actual_time(philo), philo->id);
+		printf("%d %d has taken a fork\n", get_actual_time(philo), philo->id);
 	if (status == TAKE_SECOND_FORK && !dinner_has_ended(philo->waiter))
-		printf("%ld %d has taken a second fork\n", get_actual_time(philo), philo->id);
+		printf("%d %d has taken a second fork\n", get_actual_time(philo), philo->id);
 	else if (status == EATING && !dinner_has_ended(philo->waiter))
-		printf("%ld %d is eating their %d th meal\n", get_actual_time(philo),
+		printf("%d %d is eating their %d th meal\n", get_actual_time(philo),
 			philo->id, philo->meal_count);
 	else if (status == SLEEPING && !dinner_has_ended(philo->waiter))
-		printf("%ld %d is sleeping\n", get_actual_time(philo), philo->id);
+		printf("%d %d is sleeping\n", get_actual_time(philo), philo->id);
 	else if (status == THINKING && !dinner_has_ended(philo->waiter))
-		printf("%ld %d is thinking\n", get_actual_time(philo), philo->id);
+		printf("%d %d is thinking\n", get_actual_time(philo), philo->id);
 	else if (status == DIED)
-		printf("%ld %d died\n", get_actual_time(philo), philo->id);
+		printf("%d %d died\n", get_actual_time(philo), philo->id);
 	return (0);
 }
 
@@ -39,20 +39,20 @@ int	write_status(int status, t_philo *philo, bool debug)
 {
 	if (pthread_mutex_lock(&philo->waiter->write_mutex) != 0)
 		return (1);
-	if (debug)
+	if (!debug)
 		write_status_debug(status, philo);
 	else if (!dinner_has_ended(philo->waiter))
 	{
 		if (status == TAKE_FIRST_FORK || status == TAKE_SECOND_FORK)
-			printf("%ld %d has taken a fork\n", get_actual_time(philo), philo->id);
+			printf("%d %d has taken a fork\n", get_actual_time(philo), philo->id);
 		else if (status == EATING)
-			printf("%ld %d is eating\n", get_actual_time(philo), philo->id);
+			printf("%d %d is eating\n", get_actual_time(philo), philo->id);
 		else if (status == SLEEPING)
-			printf("%ld %d is sleeping\n", get_actual_time(philo), philo->id);
+			printf("%d %d is sleeping\n", get_actual_time(philo), philo->id);
 		else if (status == THINKING)
-			printf("%ld %d is thinking\n", get_actual_time(philo), philo->id);
+			printf("%d %d is thinking\n", get_actual_time(philo), philo->id);
 		else if (status == DIED)
-			printf("%ld %d died\n", get_actual_time(philo), philo->id);
+			printf("%d %d died\n", get_actual_time(philo), philo->id);
 	}
 	if (pthread_mutex_unlock(&philo->waiter->write_mutex) != 0)
 		return (1);
@@ -73,7 +73,7 @@ bool	starving_or_sated(t_philo *philo, int *sated_count)
 	}
 	pthread_mutex_unlock(&philo->philo_mutex);
 	is_starved = since_last_meal > philo->time_to_die;
-	is_sated = philo->max_meals && philo->meal_count == philo->max_meals;
+	is_sated = *sated_count == philo->waiter->philo_total;
 	if (is_starved || is_sated)
 	{
 		setter(&philo->waiter->waiter_mutex, &philo->waiter->is_on, false);
@@ -89,6 +89,8 @@ int	check_if_starving_or_sated(t_waiter *waiter)
 	int	i;
 	int	sated_count;
 
+	if (waiter->philo_total == 1)
+		return (SUCCESS);
 	while (!dinner_has_ended(waiter))
 	{
 		i = 0;

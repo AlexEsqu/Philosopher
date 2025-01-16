@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:26 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/16 09:58:33 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/16 13:49:21 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,8 @@ typedef struct s_philo
 	int				time_to_sleep;
 	int				max_meals;
 	int				meal_count;
-	size_t			start_time;
-	size_t			last_meal_time;
+	long			start_time;
+	int				last_meal_time;
 	pthread_mutex_t	left_fork;
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	philo_mutex;
@@ -86,7 +86,7 @@ typedef struct s_waiter
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				max_meals;
-	size_t			start_time;
+	long			start_time;
 	t_philo			**philo_array;
 	pthread_mutex_t	waiter_mutex;
 	pthread_mutex_t	write_mutex;
@@ -112,9 +112,9 @@ int		check_if_starving_or_sated(t_waiter *waiter);
 /* MONITORING */
 
 int		write_status(int status, t_philo *philo, bool debug);
-size_t	get_actual_time(t_philo *philo);
-size_t	get_miliseconds(void);
-void	micro_usleep(size_t wait_time, t_waiter *waiter);
+int		get_actual_time(t_philo *philo);
+long	get_miliseconds(void);
+void	smol_sleep(int wait_time);
 bool	dinner_has_ended(t_waiter *waiter);
 
 /* UTILS */

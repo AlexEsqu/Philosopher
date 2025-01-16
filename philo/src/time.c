@@ -6,47 +6,35 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 15:36:42 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/15 21:46:16 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/16 13:56:11 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 /* Returns number of miliseconds since 1st january 1970, or 0 if fails */
-size_t	get_miliseconds(void)
+long	get_miliseconds(void)
 {
 	struct timeval	time;
 
 	if (gettimeofday(&time, NULL) == -1)
-		return (0);
-	return (time.tv_sec * 1000 + time.tv_usec / 1000);
+		return (-1);
+	return ((long)(time.tv_sec * 1000 + time.tv_usec / 1000));
 }
 
-size_t	get_actual_time(t_philo *philo)
+int	get_actual_time(t_philo *philo)
 {
 	return (get_miliseconds() - philo->start_time);
 }
 
-void	micro_usleep(size_t wait_time, t_waiter *waiter)
+void	smol_sleep(int wait_time)
 {
-	size_t	start;
-	size_t	elapsed;
-	size_t	remaining;
+	long	start;
 
 	start = get_miliseconds();
 	while (get_miliseconds() - start < wait_time)
 	{
-		if (dinner_has_ended(waiter))
-			break ;
-		elapsed = get_miliseconds() - start;
-		remaining = wait_time - elapsed;
-		if (remaining > 1000)
-			usleep(wait_time / 2);
-		else
-		{
-			while (get_miliseconds() - start < wait_time)
-				;
-		}
+		usleep(100);
 	}
 }
 
@@ -70,5 +58,5 @@ int	set_start_time(t_waiter *waiter)
 void	wait_until_philo_are_seated(t_waiter *waiter)
 {
 	while (getter(&waiter->waiter_mutex, &waiter->is_on) == false)
-		micro_usleep(10, waiter);
+		smol_sleep(10);
 }

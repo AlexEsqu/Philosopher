@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 21:37:38 by alex              #+#    #+#             */
-/*   Updated: 2025/01/16 10:06:30 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/16 14:03:57 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,13 @@
 
 int	lonely_dinner(t_philo *philo)
 {
+	philo->start_time = get_miliseconds();
 	pthread_mutex_lock(&philo->left_fork);
-	printf("%ld %d has taken a fork\n", get_actual_time(philo), philo->id);
-	micro_usleep(philo->time_to_die, philo->waiter);
-	write_status(DIED, philo, 1);
+	printf("%d %d has taken a fork\n", get_actual_time(philo), philo->id);
+	smol_sleep(philo->time_to_die);
+	printf("%d %d died\n", get_actual_time(philo), philo->id);
 	pthread_mutex_unlock(&philo->left_fork);
-	return (0);
+	return (SUCCESS);
 }
 
 static void	think(t_philo *philo)
@@ -35,7 +36,7 @@ static void	think(t_philo *philo)
 	if (time_to_think > 600)
 		time_to_think = 200;
 	write_status(THINKING, philo, 1);
-	micro_usleep((size_t)time_to_think, philo->waiter);
+	smol_sleep(time_to_think);
 }
 
 /* Locks first fork, report, locks second fork, report, set last meal time,
@@ -54,11 +55,11 @@ static void	eat(t_philo *philo,
 	if (philo->meal_count == philo->max_meals)
 		philo->is_sated = true;
 	pthread_mutex_unlock(&philo->philo_mutex);
-	micro_usleep(philo->time_to_eat, philo->waiter);
+	smol_sleep(philo->time_to_eat);
 	pthread_mutex_unlock(first_fork);
 	pthread_mutex_unlock(second_fork);
 	write_status(SLEEPING, philo, 1);
-	micro_usleep(philo->time_to_sleep, philo->waiter);
+	smol_sleep(philo->time_to_sleep);
 }
 
 /* Once all philosopher are seated, */
@@ -77,8 +78,10 @@ void	*dine(void *data)
 		else
 			eat(philo, philo->right_fork, &philo->left_fork);
 		meal_count++;
+		if (meal_count == philo->max_meals)
+			break ;
 		write_status(SLEEPING, philo, true);
-		micro_usleep(philo->time_to_sleep, philo->waiter);
+		smol_sleep(philo->time_to_sleep);
 		think(philo);
 	}
 	return (NULL);
