@@ -6,13 +6,13 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:01 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/16 15:17:00 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/17 13:01:56 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	start_dinner(t_waiter *waiter)
+static int	start_dinner(t_waiter *waiter)
 {
 	int	i;
 
@@ -33,7 +33,7 @@ int	start_dinner(t_waiter *waiter)
 	return (SUCCESS);
 }
 
-int	stop_dinner(t_waiter *waiter)
+static int	stop_dinner(t_waiter *waiter)
 {
 	int	i;
 

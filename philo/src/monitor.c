@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 23:16:48 by alex              #+#    #+#             */
-/*   Updated: 2025/01/16 14:51:18 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/17 12:58:57 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,34 +17,15 @@ bool	dinner_has_ended(t_waiter *waiter)
 	return (getter(&waiter->waiter_mutex, &waiter->is_on) != true);
 }
 
-int	write_status_debug(int status, t_philo *philo)
-{
-	if (status == TAKE_FIRST_FORK && !dinner_has_ended(philo->waiter))
-		printf("%d %d has taken a fork\n", get_actual_time(philo), philo->id);
-	if (status == TAKE_SECOND_FORK && !dinner_has_ended(philo->waiter))
-		printf("%d %d has taken a second fork\n", get_actual_time(philo), philo->id);
-	else if (status == EATING && !dinner_has_ended(philo->waiter))
-		printf("%d %d is eating their %d th meal\n", get_actual_time(philo),
-			philo->id, philo->meal_count);
-	else if (status == SLEEPING && !dinner_has_ended(philo->waiter))
-		printf("%d %d is sleeping\n", get_actual_time(philo), philo->id);
-	else if (status == THINKING && !dinner_has_ended(philo->waiter))
-		printf("%d %d is thinking\n", get_actual_time(philo), philo->id);
-	else if (status == DIED)
-		printf("%d %d died\n", get_actual_time(philo), philo->id);
-	return (0);
-}
-
-int	write_status(int status, t_philo *philo, bool debug)
+int	write_status(int status, t_philo *philo)
 {
 	if (pthread_mutex_lock(&philo->waiter->write_mutex) != 0)
 		return (1);
-	if (!debug)
-		write_status_debug(status, philo);
 	else if (!dinner_has_ended(philo->waiter))
 	{
 		if (status == TAKE_FIRST_FORK || status == TAKE_SECOND_FORK)
-			printf("%d %d has taken a fork\n", get_actual_time(philo), philo->id);
+			printf("%d %d has taken a fork\n", get_actual_time(philo),
+				philo->id);
 		else if (status == EATING)
 			printf("%d %d is eating\n", get_actual_time(philo), philo->id);
 		else if (status == SLEEPING)
@@ -77,7 +58,7 @@ bool	starving_or_sated(t_philo *philo, int *sated_count)
 	if (is_starved || is_sated)
 	{
 		if (is_starved)
-			write_status(DIED, philo, true);
+			write_status(DIED, philo);
 		setter(&philo->waiter->waiter_mutex, &philo->waiter->is_on, false);
 		return (true);
 	}

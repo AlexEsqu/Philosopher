@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 21:37:38 by alex              #+#    #+#             */
-/*   Updated: 2025/01/17 12:55:01 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/17 13:01:42 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static void	think(t_philo *philo)
 	time_to_think = (philo->time_to_die - (get_actual_time(philo)
 				- philo->last_meal_time) - philo->time_to_eat) / 2;
 	pthread_mutex_unlock(&philo->philo_mutex);
-	write_status(THINKING, philo, 1);
+	write_status(THINKING, philo);
 	smol_sleep(time_to_think);
 }
 
@@ -41,10 +41,10 @@ static void	eat(t_philo *philo,
 		pthread_mutex_t *first_fork, pthread_mutex_t *second_fork)
 {
 	pthread_mutex_lock(first_fork);
-	write_status(TAKE_FIRST_FORK, philo, 1);
+	write_status(TAKE_FIRST_FORK, philo);
 	pthread_mutex_lock(second_fork);
-	write_status(TAKE_SECOND_FORK, philo, 1);
-	write_status(EATING, philo, 1);
+	write_status(TAKE_SECOND_FORK, philo);
+	write_status(EATING, philo);
 	pthread_mutex_lock(&philo->philo_mutex);
 	philo->last_meal_time = get_actual_time(philo);
 	philo->meal_count++;
@@ -54,7 +54,7 @@ static void	eat(t_philo *philo,
 	smol_sleep(philo->time_to_eat);
 	pthread_mutex_unlock(first_fork);
 	pthread_mutex_unlock(second_fork);
-	write_status(SLEEPING, philo, 1);
+	write_status(SLEEPING, philo);
 	smol_sleep(philo->time_to_sleep);
 	think(philo);
 }

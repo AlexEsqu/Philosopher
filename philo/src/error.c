@@ -6,13 +6,13 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 15:15:01 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/15 11:06:12 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/17 13:01:19 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	ft_bzero(void *ptr, unsigned long len)
+static void	ft_bzero(void *ptr, unsigned long len)
 {
 	unsigned char	*str;
 
@@ -34,7 +34,7 @@ void	*ft_calloc(size_t nbr, size_t size)
 	return (result);
 }
 
-void	ft_putstr_fd(char *s, int fd)
+static void	ft_putstr_fd(char *s, int fd)
 {
 	int	i;
 

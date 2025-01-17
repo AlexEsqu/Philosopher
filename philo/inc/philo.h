@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:26 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/16 13:49:21 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/17 13:02:59 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,6 @@ int		parse_for_waiter(int argc, char **argv, t_waiter *waiter);
 
 int		set_table(t_waiter *waiter);
 void	wait_until_philo_are_seated(t_waiter *waiter);
-int		start_dinner(t_waiter *waiter);
 int		set_start_time(t_waiter *waiter);
 
 /* ROUTINE */
@@ -111,7 +110,7 @@ int		check_if_starving_or_sated(t_waiter *waiter);
 
 /* MONITORING */
 
-int		write_status(int status, t_philo *philo, bool debug);
+int		write_status(int status, t_philo *philo);
 int		get_actual_time(t_philo *philo);
 long	get_miliseconds(void);
 void	smol_sleep(int wait_time);
@@ -129,7 +128,6 @@ int		print_error(int error_code);
 
 /* CLEAN UP */
 
-int		stop_dinner(t_waiter *waiter);
 void	free_waiter(t_waiter *waiter);
 
 #endif
