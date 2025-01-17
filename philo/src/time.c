@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 15:36:42 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/16 17:28:00 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/17 12:24:45 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,12 @@ int	get_actual_time(t_philo *philo)
 
 void	smol_sleep(int wait_time)
 {
-	long	start;
+	long	end;
 
-	start = get_miliseconds();
-	while (get_miliseconds() - start < wait_time)
+	end = get_miliseconds() + wait_time;
+	while (get_miliseconds() < end)
 	{
-		usleep(10);
+		usleep(100);
 	}
 }
 
