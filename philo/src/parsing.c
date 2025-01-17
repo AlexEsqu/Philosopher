@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 13:35:00 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/11 11:15:37 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/17 14:16:26 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ Convert them into integers and loads them into the waiter struct */
 int	parse_for_waiter(int argc, char **argv, t_waiter *waiter)
 {
 	if (check_syntax(argc, argv) != 0)
-		return (1);
+		return (ERR_SYNTAX);
 	waiter->philo_total = ft_atoi(argv[NUMBER_OF_PHILOSOPHER]);
 	waiter->time_to_die = ft_atoi(argv[TIME_TO_DIE]);
 	waiter->time_to_eat = ft_atoi(argv[TIME_TO_EAT]);
@@ -116,7 +116,7 @@ int	parse_for_waiter(int argc, char **argv, t_waiter *waiter)
 		|| (argc == 6 && waiter->max_meals <= 0))
 	{
 		printf("Inputs cannot be null or negative\n");
-		return (1);
+		return (ERR_SYNTAX);
 	}
-	return (0);
+	return (SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 15:36:42 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/17 12:24:45 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/17 14:17:35 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ long	get_miliseconds(void)
 	struct timeval	time;
 
 	if (gettimeofday(&time, NULL) == -1)
-		return (-1);
+		return (print_error(ERR_TIME));
 	return ((long)(time.tv_sec * 1000 + time.tv_usec / 1000));
 }
 
@@ -45,7 +45,7 @@ int	set_start_time(t_waiter *waiter)
 
 	waiter->start_time = get_miliseconds();
 	if (waiter->start_time == 0)
-		return (print_error(ERR_TIME));
+		return (ERR_TIME);
 	i = 0;
 	while (i < waiter->philo_total)
 	{

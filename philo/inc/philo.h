@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:26 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/17 13:02:59 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/17 14:15:32 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ enum e_errors
 	ERR_MUTEX,
 	ERR_THREAD,
 	ERR_TIME,
+	ERR_SYNTAX,
 };
 
 typedef struct s_philo

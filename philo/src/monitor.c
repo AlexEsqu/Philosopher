@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 23:16:48 by alex              #+#    #+#             */
-/*   Updated: 2025/01/17 12:58:57 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/17 14:15:01 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ bool	dinner_has_ended(t_waiter *waiter)
 int	write_status(int status, t_philo *philo)
 {
 	if (pthread_mutex_lock(&philo->waiter->write_mutex) != 0)
-		return (1);
+		return (ERR_GENERAL);
 	else if (!dinner_has_ended(philo->waiter))
 	{
 		if (status == TAKE_FIRST_FORK || status == TAKE_SECOND_FORK)
@@ -36,8 +36,8 @@ int	write_status(int status, t_philo *philo)
 			printf("%d %d died\n", get_actual_time(philo), philo->id);
 	}
 	if (pthread_mutex_unlock(&philo->waiter->write_mutex) != 0)
-		return (1);
-	return (0);
+		return (ERR_MUTEX);
+	return (SUCCESS);
 }
 
 bool	starving_or_sated(t_philo *philo, int *sated_count)
@@ -46,13 +46,15 @@ bool	starving_or_sated(t_philo *philo, int *sated_count)
 	bool	is_starved;
 	bool	is_sated;
 
-	pthread_mutex_lock(&philo->philo_mutex);
+	if (pthread_mutex_lock(&philo->philo_mutex) != 0)
+		return (print_error(ERR_MUTEX));
 	{
 		since_last_meal = (int)(get_actual_time(philo) - philo->last_meal_time);
 		if (philo->is_sated)
 			*sated_count = *sated_count + 1;
 	}
-	pthread_mutex_unlock(&philo->philo_mutex);
+	if (pthread_mutex_unlock(&philo->philo_mutex) != 0)
+		return (print_error(ERR_MUTEX));
 	is_starved = since_last_meal > philo->time_to_die;
 	is_sated = *sated_count == philo->waiter->philo_total;
 	if (is_starved || is_sated)
