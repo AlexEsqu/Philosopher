@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
+/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 23:16:48 by alex              #+#    #+#             */
-/*   Updated: 2025/01/17 14:15:01 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/20 10:09:05 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ bool	starving_or_sated(t_philo *philo, int *sated_count)
 	}
 	if (pthread_mutex_unlock(&philo->philo_mutex) != 0)
 		return (print_error(ERR_MUTEX));
-	is_starved = since_last_meal > philo->time_to_die;
+	is_starved = since_last_meal > philo->waiter->time_to_die;
 	is_sated = *sated_count == philo->waiter->philo_total;
 	if (is_starved || is_sated)
 	{
@@ -83,7 +83,7 @@ int	check_if_starving_or_sated(t_waiter *waiter)
 			if (starving_or_sated(waiter->philo_array[i++], &sated_count))
 				return (SUCCESS);
 		}
-		usleep(1000);
+		usleep(10);
 	}
 	return (ERR_GENERAL);
 }

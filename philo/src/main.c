@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
+/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:01 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/17 14:21:31 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/20 10:05:13 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ static int	start_dinner(t_waiter *waiter)
 			return (print_error(ERR_THREAD));
 		i++;
 	}
-	smol_sleep(100);
 	if (set_start_time(waiter) != 0)
 		return (ERR_TIME);
 	setter(&waiter->waiter_mutex, &waiter->is_on, true);
