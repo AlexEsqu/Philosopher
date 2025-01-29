@@ -6,7 +6,7 @@
 /*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 20:58:54 by alex              #+#    #+#             */
-/*   Updated: 2025/01/20 10:12:04 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/29 09:01:42 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ static int	seat_philosophers(t_waiter *waiter)
 			return (print_error(ERR_MALLOC));
 		philo->id = seat + 1;
 		philo->is_sated = false;
-		philo->start_time = -1;
+		philo->last_meal_time = -1;
 		philo->meal_count = 0;
 		philo->waiter = waiter;
 		waiter->philo_array[seat] = philo;

@@ -6,7 +6,7 @@
 /*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 21:37:38 by alex              #+#    #+#             */
-/*   Updated: 2025/01/20 10:11:42 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/29 09:02:50 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	lonely_dinner(t_philo *philo)
 {
-	philo->start_time = get_miliseconds();
+	philo->waiter->start_time = get_miliseconds();
 	pthread_mutex_lock(&philo->left_fork);
 	printf("%d %d has taken a fork\n", get_actual_time(philo), philo->id);
 	smol_sleep(philo->waiter->time_to_die);

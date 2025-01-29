@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   time.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
+/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 15:36:42 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/17 14:17:35 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/29 09:00:30 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,14 @@ long	get_miliseconds(void)
 	return ((long)(time.tv_sec * 1000 + time.tv_usec / 1000));
 }
 
+/* No need for mutex because all threads will only read waiter's start time
+once set up by set start time */
 int	get_actual_time(t_philo *philo)
 {
-	return (get_miliseconds() - philo->start_time);
+	long	time;
+
+	time = get_miliseconds() - philo->waiter->start_time;
+	return (time);
 }
 
 void	smol_sleep(int wait_time)
@@ -41,22 +46,14 @@ void	smol_sleep(int wait_time)
 /* No need for mutex because applies before routine starts */
 int	set_start_time(t_waiter *waiter)
 {
-	int	i;
-
 	waiter->start_time = get_miliseconds();
 	if (waiter->start_time == 0)
 		return (ERR_TIME);
-	i = 0;
-	while (i < waiter->philo_total)
-	{
-		waiter->philo_array[i]->last_meal_time = waiter->start_time;
-		waiter->philo_array[i++]->start_time = waiter->start_time;
-	}
 	return (SUCCESS);
 }
 
 void	wait_until_philo_are_seated(t_waiter *waiter)
 {
 	while (getter(&waiter->waiter_mutex, &waiter->is_on) == false)
-		;
+		usleep(10);
 }

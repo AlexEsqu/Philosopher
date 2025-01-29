@@ -6,7 +6,7 @@
 /*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:35:26 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/20 10:08:53 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/29 09:01:54 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ typedef struct s_philo
 	int				id;
 	int				is_sated;
 	int				meal_count;
-	long			start_time;
 	int				last_meal_time;
 	pthread_mutex_t	left_fork;
 	pthread_mutex_t	*right_fork;
