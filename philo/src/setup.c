@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setup.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 20:58:54 by alex              #+#    #+#             */
-/*   Updated: 2025/01/29 09:01:42 by alex             ###   ########.fr       */
+/*   Updated: 2025/01/30 12:27:52 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ static int	seat_philosophers(t_waiter *waiter)
 
 	seat = 0;
 	waiter->philo_array = ft_calloc(waiter->philo_total, sizeof(t_philo *));
+	if (!waiter->philo_array)
+		return (ERR_GENERAL);
 	while (seat < waiter->philo_total)
 	{
 		philo = ft_calloc(1, sizeof(t_philo));

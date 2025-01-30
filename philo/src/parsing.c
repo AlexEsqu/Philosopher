@@ -6,7 +6,7 @@
 /*   By: mkling <mkling@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 13:35:00 by mkling            #+#    #+#             */
-/*   Updated: 2025/01/17 14:16:26 by mkling           ###   ########.fr       */
+/*   Updated: 2025/01/30 12:31:01 by mkling           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,11 @@ int	parse_for_waiter(int argc, char **argv, t_waiter *waiter)
 		|| (argc == 6 && waiter->max_meals <= 0))
 	{
 		printf("Inputs cannot be null or negative\n");
+		return (ERR_SYNTAX);
+	}
+	if (waiter->philo_total > 300)
+	{
+		printf("This dinner table only seats up to 300 philosophers\n");
 		return (ERR_SYNTAX);
 	}
 	return (SUCCESS);
